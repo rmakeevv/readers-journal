@@ -1,0 +1,32 @@
+.icon svg {
+    width: 3rem;
+    height: 3rem;
+    color: #0958d9;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.text {
+    font-size: 32px;
+    font-weight: 600;
+    color: #0958d9;
+    letter-spacing: -1px;
+}
+
+.small__icon svg {
+    width: 2rem;
+    height: 2rem;
+    color: white;
+}
+
+.small__text {
+    font-size: 26px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -1px;
+}
