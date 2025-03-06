@@ -1,9 +1,9 @@
-import { pool } from '../db.js';
+import { Books } from '../models/books.js';
 
 export const getAllBooks = async (req, res) => {
     try {
-        const data = await pool.query('SELECT * FROM books ORDER BY id DESC;');
-        res.send(data.rows);
+        const data = await Books.getAll();
+        res.send(data);
     } catch (e) {
         console.warn(e);
         return res.status(500).send('Internal Server Error');
@@ -12,10 +12,8 @@ export const getAllBooks = async (req, res) => {
 
 export const getOneBook = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM books WHERE id = $1;', [
-            req.params.id,
-        ]);
-        res.send(result.rows[0]);
+        const data = await Books.findById(req.params.id);
+        res.send(data);
     } catch (e) {
         console.warn(e);
         return res.status(500).send('Internal Server Error');
@@ -25,10 +23,8 @@ export const getOneBook = async (req, res) => {
 export const addNewBook = async (req, res) => {
     try {
         const { name, year, genre, author } = await req.body;
-        const text = 'INSERT INTO books VALUES ($1, $2, $3, $4) RETURNING *';
-        const values = [name, year, genre, author];
-        const result = await pool.query(text, values);
-        res.send(result.rows[0]);
+        const data = await Books.create({ name, year, genre, author });
+        res.send(data);
     } catch (e) {
         console.warn(e.message);
         return res.status(500).send('Internal Server Error');
@@ -38,8 +34,7 @@ export const addNewBook = async (req, res) => {
 export const deleteOneBook = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const text = 'DELETE FROM books WHERE id = $1';
-        await pool.query(text, [id]);
+        await Books.delete(id);
         res.sendStatus(200);
     } catch (e) {
         console.warn(e.message);
@@ -51,9 +46,7 @@ export const editOneBook = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const { name, year, genre, author, instock } = req.body;
-        const text =
-            'UPDATE books SET name = $1, author = $2, year = $3, genre = $4, instock = $5 WHERE id = $6';
-        await pool.query(text, [name, author, year, genre, instock, id]);
+        await Books.update(id, { name, year, genre, author, instock });
         res.sendStatus(200);
     } catch (e) {
         console.warn(e.message);

@@ -6,13 +6,12 @@
     height: 100vh;
 }
 
-.error {
-    color: #ff7875;
-    font-size: 14px;
-    font-weight: 300;
-}
-
-.auth-container {
+.register {
     display: flex;
     flex-direction: column;
+}
+
+.go-to-auth {
+    text-decoration: none;
+    color: #0958d9;
 }

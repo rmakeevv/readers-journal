@@ -5,6 +5,8 @@ import Auth from './Auth';
 import AuthProvider from './AuthProvider';
 import Book from './admin/Book';
 import { routesEnum } from '../constants/routes';
+import Register from './register';
+import RegisterSuccess from './register/success';
 
 const Router = createBrowserRouter([
     {
@@ -40,6 +42,14 @@ const Router = createBrowserRouter([
             {
                 path: 'auth',
                 element: <Auth />,
+            },
+            {
+                path: 'register',
+                element: <Register />,
+            },
+            {
+                path: 'register/success',
+                element: <RegisterSuccess />,
             },
         ],
     },

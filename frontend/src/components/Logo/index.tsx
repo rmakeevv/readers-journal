@@ -12,6 +12,8 @@ const logoClassName = {
     ['small']: { icon: 'small__icon', text: 'small__text' },
 };
 
+const LOGO_TITLE = 'Reader';
+
 const Logo = ({ size = 'small' }: LogoProps) => {
     const sizeStyles = logoClassName[size];
 
@@ -19,7 +21,7 @@ const Logo = ({ size = 'small' }: LogoProps) => {
         <Space>
             <AliwangwangOutlined className={styles[sizeStyles.icon]} />
 
-            <span className={styles[sizeStyles.text]}>booklist</span>
+            <span className={styles[sizeStyles.text]}>{LOGO_TITLE}</span>
         </Space>
     );
 };

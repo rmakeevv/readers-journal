@@ -1,11 +1,17 @@
 import { pool } from '../db.js';
 
 export const User = {
-    getOneByEmail: async (email) => {
+    findOneByEmail: async (email) => {
         const result = await pool.query(
             'SELECT * FROM users WHERE email = $1;',
             [email]
         );
+        return result.rows[0];
+    },
+    findOneById: async (id) => {
+        const result = await pool.query('SELECT * FROM users WHERE id = $1;', [
+            id,
+        ]);
         return result.rows[0];
     },
     create: async ({ name, last_name, role, email, password }) => {

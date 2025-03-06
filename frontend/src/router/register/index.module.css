@@ -12,7 +12,7 @@
     font-weight: 300;
 }
 
-.auth-container {
+.register {
     display: flex;
     flex-direction: column;
 }

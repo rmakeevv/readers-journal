@@ -2,10 +2,12 @@ import styles from './index.module.css';
 import { UseAuthForm } from 'hooks';
 import { AuthForm, Logo } from 'components';
 import { OnFinishFailedErrorInfo } from '../../types';
+import { Divider } from 'antd';
 
 type FieldType = {
-    username?: string;
+    email?: string;
     password?: string;
+    remember?: boolean;
 };
 
 const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo<FieldType>) => {
@@ -17,7 +19,7 @@ function Auth() {
 
     return (
         <div className={styles.page}>
-            <div>
+            <div className={styles['auth-container']}>
                 <Logo size={'middle'} />
                 <AuthForm onFinish={onFinish} onFinishFailed={onFinishFailed} />
                 {isError && (
@@ -25,6 +27,11 @@ function Auth() {
                         Пароль и(или) логин неверный!
                     </span>
                 )}
+                <Divider />
+                <span>
+                    Забыли пароль? Напишите администратору на почту <br />
+                    <a href={'mailto:example@mail.com'}>example@mail.com</a>
+                </span>
             </div>
         </div>
     );

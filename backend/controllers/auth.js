@@ -32,35 +32,49 @@ export const authController = {
             return res.status(401).send(error);
         }
     },
-    login: (req, res) => {
-        const { password, username } = req.body;
+    login: async (req, res) => {
+        try {
+            const { password, email } = req.body;
 
-        if (
-            password === process.env.APP_SU_PASSWORD &&
-            username === process.env.APP_SU_NAME
-        ) {
-            let jwtSecretKey = process.env.JWT_SECRET_KEY;
-            let data = {
-                time: Date(),
-                userId: 12,
-                role: 'admin',
+            if (!email || !password) {
+                return res.status(401).send('Укажите пароль и логин');
+            }
+
+            const user = await User.findOneByEmail(email);
+
+            if (!user) {
+                return res.status(401).send('Не найдено, зарегистрируйтесь');
+            }
+
+            if (!bcrypt.compareSync(password, user.password)) {
+                return res.status(401).send('Неверный пароль');
+            }
+
+            const jwtSecretKey = process.env.JWT_SECRET_KEY;
+            const data = {
+                email: user.email,
+                userId: user.id,
+                role: user.role,
             };
 
-            const token = jwt.sign(data, jwtSecretKey);
+            const token = jwt.sign(data, jwtSecretKey, {
+                expiresIn: '2h',
+            });
 
             res.send(token);
-        } else {
-            res.status(401).send('No pass');
+        } catch (e) {
+            console.warn(e);
+            return res.status(401).send(e);
         }
     },
     register: async (req, res) => {
         try {
             const { name, last_name, role, email, password } = await req.body;
             if (!name || !last_name || !role || !email || !password) {
-                return res.send(401, 'Заполните все поля');
+                return res.status(401).send('Заполните все поля');
             }
 
-            const registeredUser = await User.getOneByEmail(email);
+            const registeredUser = await User.findOneByEmail(email);
 
             if (registeredUser) {
                 return res.status(403).send({

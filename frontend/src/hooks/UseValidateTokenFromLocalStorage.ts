@@ -18,46 +18,31 @@ export const UseValidateTokenFromLocalStorage = (
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const localToken = localStorage.getItem(LOCALSTORAGE_ID_TOKEN_KEY);
+        if (!isLogged) {
+            const localToken = localStorage.getItem(LOCALSTORAGE_ID_TOKEN_KEY);
 
-        if (!localToken) {
-            setTokenValidationIsLoading(false);
-            navigate(routesEnum.auth, { replace: true });
-        } else {
-            instance.defaults.headers.common['gfg_token_header_key'] =
-                localToken;
-            instance
-                .get('/user/validateToken')
-                .then(() => {
-                    setIsLogged(true);
-                    const decoded = jwtDecode<{ role: rolesEnum }>(localToken);
-                    const { role } = decoded;
-                    dispatch(setUserRole(role));
-
-                    switch (role) {
-                        case rolesEnum.admin: {
-                            return navigate(routesEnum.admin);
-                        }
-                        case rolesEnum.student: {
-                            return navigate(
-                                routesEnum.profile + routesEnum.student
-                            );
-                        }
-                        case rolesEnum.parent: {
-                            return navigate(
-                                routesEnum.profile + routesEnum.parent
-                            );
-                        }
-                        default: {
-                            return navigate(routesEnum.auth);
-                        }
-                    }
-                })
-                .catch(() => {
-                    localStorage.removeItem(LOCALSTORAGE_ID_TOKEN_KEY);
-                    navigate(routesEnum.auth);
-                })
-                .finally(() => setTokenValidationIsLoading(false));
+            if (!localToken) {
+                setTokenValidationIsLoading(false);
+                navigate(routesEnum.auth, { replace: true });
+            } else {
+                instance.defaults.headers.common['gfg_token_header_key'] =
+                    localToken;
+                instance
+                    .get('/user/validateToken')
+                    .then(() => {
+                        setIsLogged(true);
+                        const decodedToken = jwtDecode<{ role: rolesEnum }>(
+                            localToken
+                        );
+                        const { role } = decodedToken;
+                        dispatch(setUserRole(role));
+                    })
+                    .catch(() => {
+                        localStorage.removeItem(LOCALSTORAGE_ID_TOKEN_KEY);
+                        navigate(routesEnum.auth);
+                    })
+                    .finally(() => setTokenValidationIsLoading(false));
+            }
         }
     }, [isLogged]);
     return tokenValidationIsLoading;
