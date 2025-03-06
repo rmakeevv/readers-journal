@@ -1,4 +1,4 @@
-import { UseValidateToken } from 'hooks/UseValidateToken';
+import { UseValidateTokenFromLocalStorage } from 'hooks/UseValidateTokenFromLocalStorage';
 import { Outlet } from 'react-router-dom';
 import { Dispatch, SetStateAction, useState } from 'react';
 
@@ -6,7 +6,6 @@ import { createContext } from 'react';
 
 export type UserContextType = {
     isLogged: boolean;
-    // setIsLogged: (_value: boolean) => void;
     setIsLogged: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -17,7 +16,7 @@ export const UserContext = createContext<UserContextType>({
 
 export default function AuthProvider() {
     const [isLogged, setIsLogged] = useState(false);
-    const loading = UseValidateToken(isLogged, setIsLogged);
+    const loading = UseValidateTokenFromLocalStorage(isLogged, setIsLogged);
 
     if (!loading)
         return (

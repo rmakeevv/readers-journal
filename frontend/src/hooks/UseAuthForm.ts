@@ -2,7 +2,15 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from 'router/AuthProvider';
 import { instance } from 'services';
-import { TOKEN_HEADER_KEY } from '../constants/id-token';
+import {
+    LOCALSTORAGE_ID_TOKEN_KEY,
+    TOKEN_HEADER_KEY,
+} from '../constants/id-token';
+import { jwtDecode } from 'jwt-decode';
+import { rolesEnum } from '../constants/user';
+import { routesEnum } from '../constants/routes';
+import { useAppDispatch } from '../store/hooks';
+import { setUserRole } from '../store/user/slice';
 
 type FieldType = {
     username?: string;
@@ -19,13 +27,25 @@ export const UseAuthForm: UseAuthFormProps = () => {
     const [isError, setIsError] = useState(false);
     const navigate = useNavigate();
 
+    const dispatch = useAppDispatch();
+
     const onFinish = async (values: FieldType) => {
         try {
-            const token = await instance.post('/user/auth', values);
-            instance.defaults.headers.common[TOKEN_HEADER_KEY] = token.data;
-            localStorage.setItem('token', token.data);
+            const response = await instance.post('/user/auth', values);
+            const decoded = jwtDecode<{ role: rolesEnum }>(response.data);
+            const { role } = decoded;
+
+            instance.defaults.headers.common[TOKEN_HEADER_KEY] = response.data;
+            localStorage.setItem(LOCALSTORAGE_ID_TOKEN_KEY, response.data);
             setIsLogged(true);
-            navigate('/');
+
+            dispatch(setUserRole(role));
+
+            if (role === rolesEnum.admin) {
+                navigate(routesEnum.admin, { replace: true });
+            } else {
+                navigate(routesEnum.base);
+            }
         } catch (e) {
             setIsError(true);
             console.log(e);

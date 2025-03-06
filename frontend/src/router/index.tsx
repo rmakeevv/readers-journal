@@ -1,22 +1,41 @@
-import Root from './Root';
+import Books from './admin/Books';
 
 import { createBrowserRouter } from 'react-router-dom';
 import Auth from './Auth';
 import AuthProvider from './AuthProvider';
-import BookRoute from './Book';
+import Book from './admin/Book';
+import { routesEnum } from '../constants/routes';
 
 const Router = createBrowserRouter([
     {
-        path: '/',
+        path: routesEnum.base,
         element: <AuthProvider />,
         children: [
             {
-                index: true,
-                element: <Root />,
+                path: routesEnum.admin,
+                children: [
+                    {
+                        index: true,
+                        element: <Books />,
+                    },
+                    {
+                        path: 'books/:id',
+                        element: <Book />,
+                    },
+                ],
             },
             {
-                path: 'books/:id',
-                element: <BookRoute />,
+                path: routesEnum.profile,
+                children: [
+                    {
+                        path: routesEnum.student,
+                        element: <>d</>,
+                    },
+                    {
+                        path: routesEnum.parent,
+                        element: <>parent</>,
+                    },
+                ],
             },
             {
                 path: 'auth',

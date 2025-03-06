@@ -49,6 +49,7 @@ app.post('/user/generateToken', (req, res) => {
     let data = {
         time: Date(),
         userId: 12,
+        role: 'admin',
     };
 
     const token = jwt.sign(data, jwtSecretKey);
@@ -67,6 +68,7 @@ app.post('/user/auth', (req, res) => {
         let data = {
             time: Date(),
             userId: 12,
+            role: 'admin',
         };
 
         const token = jwt.sign(data, jwtSecretKey);

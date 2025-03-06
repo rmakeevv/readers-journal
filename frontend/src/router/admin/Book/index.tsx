@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ContentWrapper, Header } from '../../components';
-import { UseLogOut } from '../../hooks';
-import { getOneBook } from '../../services';
+import { ContentWrapper, AdminHeader } from '../../../components';
+import { UseLogOut } from '../../../hooks';
+import { getOneBook } from '../../../services';
 import { useParams } from 'react-router-dom';
-import { IBook } from '../../types';
+import { IBook } from '../../../types';
 import { Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
 
@@ -23,7 +23,7 @@ const getDescriptionItems = (book: IBook) => {
     return itemsTest;
 };
 
-const BookRoute = () => {
+const Book = () => {
     const logOut = UseLogOut();
 
     const { id = '' } = useParams();
@@ -44,7 +44,7 @@ const BookRoute = () => {
 
     return (
         <div>
-            <Header logOut={logOut} />
+            <AdminHeader logOut={logOut} />
             {isLoading || bookData === undefined ? (
                 <></>
             ) : (
@@ -63,4 +63,4 @@ const BookRoute = () => {
     );
 };
 
-export default BookRoute;
+export default Book;

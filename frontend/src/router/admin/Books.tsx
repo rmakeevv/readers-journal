@@ -1,4 +1,9 @@
-import { ContentWrapper, CreateForm, EditableCell, Header } from 'components';
+import {
+    ContentWrapper,
+    CreateForm,
+    EditableCell,
+    AdminHeader,
+} from 'components';
 import {
     UseDeleteItem,
     UseFinishCreate,
@@ -17,7 +22,7 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
-const Root = () => {
+const Books = () => {
     const [bookList, setBookList] = useState<BookList>();
     const [editingKey, setEditingKey] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
@@ -163,7 +168,7 @@ const Root = () => {
 
     return (
         <div>
-            <Header logOut={logOut} />
+            <AdminHeader logOut={logOut} />
             <ContentWrapper>
                 {contextHolder}
 
@@ -197,4 +202,4 @@ const Root = () => {
     );
 };
 
-export default Root;
+export default Books;

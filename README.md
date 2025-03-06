@@ -86,9 +86,11 @@ cd ./db
 docker-compose up -d
 ```
 
-Зайти в контейнер с postgres: 
+Зайти в контейнер с postgres 
+нужно выполнять в директории db!!!
 
 ```shell
+cd ./db
 docker-compose exec db sh
 ```
 
