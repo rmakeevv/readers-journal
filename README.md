@@ -33,6 +33,18 @@ id SERIAL PRIMARY KEY,
 instock int);
 ```
 
+Создание таблицы `users`: 
+
+```
+CREATE TABLE "public"."users" (
+    "id" integer DEFAULT nextval('users_id_seq') NOT NULL,
+    "name" character varying NOT NULL,
+    "last_name" character varying NOT NULL,
+    "role" character varying NOT NULL,
+    "email" character varying NOT NULL
+) WITH (oids = false);
+```
+
 Затем импортируйте данные.
 CSV-файл таблицы лежит в корне проекта.
 
@@ -84,6 +96,12 @@ REACT_APP_BASE_URL=http://localhost:5001
 ```shell
 cd ./db
 docker-compose up -d
+```
+
+Если нужно пересобрать образ:
+
+```shell
+docker-compose up --build -d
 ```
 
 Зайти в контейнер с postgres 
