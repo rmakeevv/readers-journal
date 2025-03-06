@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { User } from '../models/user.js';
 
 export const authController = {
     generateToken: (req, res) => {
@@ -49,6 +51,35 @@ export const authController = {
             res.send(token);
         } else {
             res.status(401).send('No pass');
+        }
+    },
+    register: async (req, res) => {
+        try {
+            const { name, last_name, role, email, password } = await req.body;
+            if (!name || !last_name || !role || !email || !password) {
+                return res.send(401, 'Заполните все поля');
+            }
+
+            const registeredUser = await User.getOneByEmail(email);
+
+            if (registeredUser) {
+                return res.status(403).send({
+                    error: 'A user account already exists with this email',
+                });
+            }
+
+            const newUser = await User.create({
+                name,
+                last_name,
+                role,
+                email,
+                password: bcrypt.hashSync(password, 8),
+            });
+
+            res.send(newUser);
+        } catch (e) {
+            console.log(e);
+            return res.status(401).send(e);
         }
     },
 };
