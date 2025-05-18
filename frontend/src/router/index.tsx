@@ -7,6 +7,8 @@ import Book from './admin/Book';
 import { routesEnum } from '../constants/routes';
 import Register from './register';
 import RegisterSuccess from './register/success';
+import ParentRoute from './parent';
+import StudentRoute from './student';
 
 const Router = createBrowserRouter([
     {
@@ -31,13 +33,17 @@ const Router = createBrowserRouter([
                 children: [
                     {
                         path: routesEnum.student,
-                        element: <>d</>,
+                        element: <StudentRoute />,
                     },
                     {
-                        path: routesEnum.parent,
-                        element: <>parent</>,
+                        path: 'parent/',
+                        element: <ParentRoute />,
                     },
                 ],
+            },
+            {
+                path: 'books/:id',
+                element: <Book />,
             },
             {
                 path: 'auth',
