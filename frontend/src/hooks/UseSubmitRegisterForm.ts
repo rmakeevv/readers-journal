@@ -12,24 +12,33 @@ type FieldType = {
     agreement?: boolean;
 };
 
-type UseSubmitRegisterFormProps = () => {
+type UseSubmitRegisterFormProps = (
+    onSuccess: () => void,
+    userRole: rolesEnum,
+    parentId?: number
+) => {
     onFinish: (values: FieldType) => Promise<void>;
     isError: boolean;
 };
 
-export const useSubmitRegisterForm: UseSubmitRegisterFormProps = () => {
+export const useSubmitRegisterForm: UseSubmitRegisterFormProps = (
+    onSuccess,
+    userRole,
+    parentId
+) => {
     const [isError, setIsError] = useState(false);
-    const navigate = useNavigate();
 
     const onFinish = async (values: FieldType) => {
         try {
             const userData = {
                 ...values,
-                role: rolesEnum.parent,
+                role: userRole,
                 last_name: values.lastName,
+                parent_id: parentId ? parentId : null,
             };
             await instance.post('/user/register', userData);
-            navigate('/register/success');
+            setIsError(false);
+            onSuccess();
         } catch (e) {
             setIsError(true);
             console.log(e);

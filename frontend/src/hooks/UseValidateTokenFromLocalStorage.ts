@@ -4,9 +4,9 @@ import { instance } from 'services';
 import { LOCALSTORAGE_ID_TOKEN_KEY } from '../constants/id-token';
 import { routesEnum } from '../constants/routes';
 import { useAppDispatch } from '../store/hooks';
-import { setUserRole } from '../store/user/slice';
+import { setUserData } from '../store/user/slice';
 import { jwtDecode } from 'jwt-decode';
-import { rolesEnum } from '../constants/user';
+import { DecodedTokenProps } from '../types';
 
 export const UseValidateTokenFromLocalStorage = (
     isLogged: boolean,
@@ -31,11 +31,9 @@ export const UseValidateTokenFromLocalStorage = (
                     .get('/user/validateToken')
                     .then(() => {
                         setIsLogged(true);
-                        const decodedToken = jwtDecode<{ role: rolesEnum }>(
-                            localToken
-                        );
-                        const { role } = decodedToken;
-                        dispatch(setUserRole(role));
+                        const decodedToken =
+                            jwtDecode<DecodedTokenProps>(localToken);
+                        dispatch(setUserData(decodedToken));
                     })
                     .catch(() => {
                         localStorage.removeItem(LOCALSTORAGE_ID_TOKEN_KEY);
