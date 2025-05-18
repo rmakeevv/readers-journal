@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ContentWrapper, AdminHeader } from '../../../components';
 import { UseLogOut } from '../../../hooks';
-import { getOneBook } from '../../../services';
+import { getOneBook, instance } from '../../../services';
 import { useParams } from 'react-router-dom';
-import { IBook } from '../../../types';
-import { Descriptions, DescriptionsProps } from 'antd';
+import { IBook, User } from '../../../types';
+import { Button, Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
+import { useSelector } from 'react-redux';
+import { selectUserId } from '../../../store/user/slice';
 
 const getDescriptionItems = (book: IBook) => {
     const bookItems = Object.entries(book);
@@ -25,22 +27,56 @@ const getDescriptionItems = (book: IBook) => {
 
 const Book = () => {
     const logOut = UseLogOut();
-
     const { id = '' } = useParams();
-
     const [isLoading, setIsLoading] = useState(false);
-
     const [bookData, setBookData] = useState<IBook | undefined>(undefined);
+    const [children, setChildren] = useState<User[]>([]);
+    const [selectedChild, setSelectedChild] = useState<string>();
+    const userId = useSelector(selectUserId);
+    const [assignedId, setAssignedId] = useState('');
+
+    useEffect(() => {
+        const fetchChildren = async () => {
+            const children = await instance.get(
+                '/users/' + userId + '/children'
+            );
+            setChildren(children.data);
+            if (children.data.length > 0) {
+                setSelectedChild(children.data[0].id.toString());
+            }
+        };
+
+        fetchChildren().then();
+    }, [userId]);
 
     useEffect(() => {
         setIsLoading(true);
         getOneBook(id)
             .then((data) => {
-                setBookData(data);
+                if (data !== undefined) {
+                    setBookData(data[0]);
+                }
             })
             .catch((e) => console.log(e))
             .finally(() => setIsLoading(false));
     }, []);
+
+    const handleAssignBook = async () => {
+        if (selectedChild) {
+            console.log(`Книга назначена ребенку с ID: ${selectedChild}`);
+
+            const assignBook = async () => {
+                await instance.post('/users/assign', {
+                    child_id: selectedChild,
+                    book_id: id,
+                    parent_id: userId,
+                });
+                setAssignedId(selectedChild);
+            };
+
+            await assignBook();
+        }
+    };
 
     return (
         <div>
@@ -49,6 +85,28 @@ const Book = () => {
                 <></>
             ) : (
                 <ContentWrapper>
+                    <div className={styles['assign_book']}>
+                        <span>Назначить ребенку</span>
+                        <span>Выберите имя</span>
+                        <select
+                            value={selectedChild}
+                            onChange={(e) => setSelectedChild(e.target.value)}
+                        >
+                            {children.map((child) => (
+                                <option key={child.id} value={child.id}>
+                                    {child.email} {child.name}
+                                </option>
+                            ))}
+                        </select>
+                        <Button
+                            disabled={assignedId === selectedChild}
+                            onClick={handleAssignBook}
+                        >
+                            Назначить книгу
+                        </Button>
+
+                        {}
+                    </div>
                     <div className={styles.container}>
                         <Descriptions
                             title={bookData.name}

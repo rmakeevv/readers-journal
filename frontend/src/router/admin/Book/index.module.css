@@ -4,3 +4,11 @@
     box-sizing: border-box;
     /*max-width: 402px;*/
 }
+
+.assign_book {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 12px;
+    width: 200px;
+}
