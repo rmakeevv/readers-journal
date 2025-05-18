@@ -4,6 +4,8 @@ import { OnFinishFailedErrorInfo } from '../../types';
 import styles from './index.module.css';
 import { Flex } from 'antd';
 import { useSubmitRegisterForm } from '../../hooks/UseSubmitRegisterForm';
+import { useNavigate } from 'react-router-dom';
+import { rolesEnum } from '../../constants/user';
 
 type FieldType = {
     email?: string;
@@ -19,7 +21,15 @@ const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo<FieldType>) => {
 };
 
 const Register = () => {
-    const { onFinish, isError } = useSubmitRegisterForm();
+    const navigate = useNavigate();
+
+    const onSuccess = () => {
+        navigate('/register/success');
+    };
+    const { onFinish, isError } = useSubmitRegisterForm(
+        onSuccess,
+        rolesEnum.parent
+    );
 
     return (
         <div className={styles.page}>
