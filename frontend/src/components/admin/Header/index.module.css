@@ -11,3 +11,8 @@
     box-sizing: border-box;
     align-items: center;
 }
+
+.link_to_profile {
+    text-decoration: none;
+    color: #fafafa;
+}
