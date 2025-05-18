@@ -69,7 +69,8 @@ export const authController = {
     },
     register: async (req, res) => {
         try {
-            const { name, last_name, role, email, password } = await req.body;
+            const { name, last_name, role, email, password, parent_id } =
+                await req.body;
             if (!name || !last_name || !role || !email || !password) {
                 return res.status(401).send('Заполните все поля');
             }
@@ -87,6 +88,7 @@ export const authController = {
                 last_name,
                 role,
                 email,
+                parent_id,
                 password: bcrypt.hashSync(password, 8),
             });
 
