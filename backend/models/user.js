@@ -14,10 +14,10 @@ export const User = {
         ]);
         return result.rows[0];
     },
-    create: async ({ name, last_name, role, email, password }) => {
+    create: async ({ name, last_name, role, email, password, parent_id }) => {
         const text =
-            'INSERT INTO users(name, last_name, role, email, password) VALUES($1, $2, $3, $4, $5) RETURNING *';
-        const values = [name, last_name, role, email, password];
+            'INSERT INTO users(name, last_name, role, email, password, parent_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+        const values = [name, last_name, role, email, password, parent_id];
 
         const query = {
             name: 'register',
@@ -88,5 +88,78 @@ export const User = {
 
         const result = await pool.query(query);
         return result.rows[0];
+    },
+    async getChildrenWithAssignedBooks(parentId) {
+        try {
+            // 1. Получаем всех детей данного родителя
+            const childrenQuery = `
+        SELECT id, name, last_name, email 
+        FROM users 
+        WHERE parent_id = $1 AND role = 'student'
+      `;
+            const childrenResult = await pool.query(childrenQuery, [parentId]);
+            const children = childrenResult.rows;
+
+            // 2. Для каждого ребенка получаем назначенные книги
+            for (const child of children) {
+                const booksQuery = `
+          SELECT b.id, b.name, b.author, ab.status
+          FROM AssignedBooks ab
+          JOIN Books b ON ab.book_id = b.id
+          WHERE ab.child_id = $1
+          ORDER BY ab.id DESC
+        `;
+                const booksResult = await pool.query(booksQuery, [child.id]);
+                child.assignedBooks = booksResult.rows;
+            }
+
+            return children;
+        } catch (error) {
+            throw new Error(
+                `Error fetching children with books: ${error.message}`
+            );
+        }
+    },
+    getAllChildrenByParentId: async (parentId) => {
+        try {
+            // 1. Получаем всех детей данного родителя
+            const childrenQuery = `
+        SELECT id, name, last_name, email 
+        FROM users 
+        WHERE parent_id = $1 AND role = 'student'
+      `;
+            const childrenResult = await pool.query(childrenQuery, [parentId]);
+            return childrenResult.rows;
+        } catch (error) {
+            throw new Error(
+                `Error fetching children with books: ${error.message}`
+            );
+        }
+    },
+    assignBook: async (parentId, childId, bookId) => {
+        try {
+            const text =
+                'INSERT INTO AssignedBooks(id, child_id,  book_id, assigned_by, status) VALUES($1, $2, $3, $4, $5) RETURNING *';
+            const values = [
+                childId + bookId,
+                childId,
+                bookId,
+                parentId,
+                'assigned',
+            ];
+
+            const query = {
+                name: 'assign-book',
+                text,
+                values,
+            };
+
+            const result = await pool.query(query);
+            return result.rows;
+        } catch (error) {
+            throw new Error(
+                `Error fetching children with books: ${error.message}`
+            );
+        }
     },
 };
