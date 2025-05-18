@@ -1,4 +1,3 @@
-import { AliwangwangOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
 import styles from './index.module.css';
 
@@ -19,8 +18,6 @@ const Logo = ({ size = 'small' }: LogoProps) => {
 
     return (
         <Space>
-            <AliwangwangOutlined className={styles[sizeStyles.icon]} />
-
             <span className={styles[sizeStyles.text]}>{LOGO_TITLE}</span>
         </Space>
     );

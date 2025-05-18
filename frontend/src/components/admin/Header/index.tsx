@@ -1,5 +1,4 @@
 import styles from './index.module.css';
-import { PoweroffOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { IHeader } from './types';
 import { Logo } from 'components';
@@ -14,7 +13,7 @@ const AdminHeader = ({ logOut }: IHeader) => {
             <Link to={routesEnum.admin}>
                 <Logo size={'small'} />
             </Link>
-            <Button onClick={logOut} icon={<PoweroffOutlined />}>
+            <Button onClick={logOut}>
                 {LOGOUT_BUTTON_TITLE}
             </Button>
         </div>
