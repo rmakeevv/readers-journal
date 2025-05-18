@@ -4,5 +4,5 @@ export enum routesEnum {
     base = '/',
     profile = '/profile',
     student = 'student',
-    parent = 'parent',
+    parent = 'parent/',
 }

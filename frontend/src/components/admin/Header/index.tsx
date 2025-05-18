@@ -5,7 +5,7 @@ import { Logo } from 'components';
 import { Link } from 'react-router-dom';
 import { routesEnum } from '../../../constants/routes';
 import { useSelector } from 'react-redux';
-import { selectUserData, selectUserEmail } from '../../../store/user/slice';
+import { selectUserData } from '../../../store/user/slice';
 import { rolesEnum } from '../../../constants/user';
 
 const LOGOUT_BUTTON_TITLE = 'Выход';
