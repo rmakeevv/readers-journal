@@ -1,0 +1,29 @@
+.user__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.user__table thead tr {
+    background-color: #4caf50;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+.user__table th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.user__table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.add_user_form {
+    padding: 20px 12px;
+}
