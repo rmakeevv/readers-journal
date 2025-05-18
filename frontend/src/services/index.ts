@@ -18,7 +18,7 @@ export const getAllBooks = async () => {
 
 export const getOneBook = async (id: string) => {
     try {
-        const res = await instance.get<IBook>('book/' + id);
+        const res = await instance.get<IBook[]>('book/' + id);
         return res.data;
     } catch (e) {
         console.warn(e);
@@ -45,6 +45,14 @@ export const deleteOneBook = async (id: number) => {
 export const editOneBook = async (item: IBook) => {
     try {
         await instance.put('book/' + item.id, item);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+export const getChildrenWithBooks = async (userId: number) => {
+    try {
+        return await instance.get(`users/${userId}/children-with-books`);
     } catch (e) {
         console.log(e);
     }
