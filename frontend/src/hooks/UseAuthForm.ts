@@ -10,7 +10,8 @@ import { jwtDecode } from 'jwt-decode';
 import { rolesEnum } from '../constants/user';
 import { routesEnum } from '../constants/routes';
 import { useAppDispatch } from '../store/hooks';
-import { setUserRole } from '../store/user/slice';
+import { DecodedTokenProps } from '../types';
+import { setUserData } from '../store/user/slice';
 
 type FieldType = {
     email?: string;
@@ -33,8 +34,7 @@ export const UseAuthForm: UseAuthFormProps = () => {
     const onFinish = async (values: FieldType) => {
         try {
             const response = await instance.post('/user/login', values);
-            const decodedToken = jwtDecode<{ role: rolesEnum }>(response.data);
-            const { role } = decodedToken;
+            const decodedToken = jwtDecode<DecodedTokenProps>(response.data);
 
             instance.defaults.headers.common[TOKEN_HEADER_KEY] = response.data;
 
@@ -43,10 +43,9 @@ export const UseAuthForm: UseAuthFormProps = () => {
             }
 
             setIsLogged(true);
-            dispatch(setUserRole(role));
-            console.log(role);
+            dispatch(setUserData(decodedToken));
 
-            switch (role) {
+            switch (decodedToken.role) {
                 case rolesEnum.admin: {
                     return navigate(routesEnum.admin, { replace: true });
                 }
