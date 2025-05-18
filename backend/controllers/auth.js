@@ -96,4 +96,28 @@ export const authController = {
             return res.status(401).send(e);
         }
     },
+    resetPassword: async (req, res) => {
+        try {
+            const { userId, newPassword } = req.body;
+
+            if (!userId || !newPassword) {
+                return res
+                    .status(400)
+                    .send('Необходимо указать ID пользователя и новый пароль');
+            }
+
+            const updatedUser = await User.update(userId, {
+                password: bcrypt.hashSync(newPassword, 8),
+            });
+
+            if (!updatedUser) {
+                return res.status(404).send('Пользователь не найден');
+            }
+
+            res.send({ message: 'Пароль успешно изменен' });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send('Ошибка при изменении пароля');
+        }
+    },
 };
