@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectUserId } from '../../store/user/slice';
 import styles from './index.module.css';
 import { Link } from 'react-router-dom';
-import { AdminHeader, Logo } from '../../components';
+import { AdminHeader } from '../../components';
 import { UseLogOut } from '../../hooks';
 import { Button, Flex, Form, Input } from 'antd';
 import { useSubmitRegisterForm } from '../../hooks/UseSubmitRegisterForm';
