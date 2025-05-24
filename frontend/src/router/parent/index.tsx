@@ -44,15 +44,23 @@ const ParentRoute = () => {
     const id = useSelector(selectUserId);
     const [childrenData, setChildrenData] = useState<ChildData[] | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [isFormShown, setIsFormShown] = useState(true);
+    const [isFormShown, setIsFormShown] = useState(false);
     const logOut = UseLogOut();
+
+    const onChildrenRegisterSuccess = () => {
+        setIsSuccess(true);
+        setIsFormShown(false);
+    };
+
+    const handleChildrenRegisterFormToggleButtonClick = () => {
+        setIsFormShown((prevState) => !prevState);
+        setIsSuccess(false);
+    };
+
     const { onFinish, isError } = useSubmitRegisterForm(
-        () => {
-            setIsSuccess(true);
-            setIsFormShown(false);
-        },
+        onChildrenRegisterSuccess,
         rolesEnum.student,
-        id ? id : undefined
+        id
     );
 
     useEffect(() => {
@@ -71,10 +79,9 @@ const ParentRoute = () => {
                     <Flex justify={'center'} gap={'middle'} align={'center'}>
                         <h1>Добавление ребенка</h1>
                         <Button
-                            onClick={() => {
-                                setIsFormShown((prevState) => !prevState);
-                                setIsSuccess(false);
-                            }}
+                            onClick={
+                                handleChildrenRegisterFormToggleButtonClick
+                            }
                         >
                             {isFormShown ? 'скрыть' : 'добавить'}
                         </Button>
@@ -124,8 +131,7 @@ const ParentRoute = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message:
-                                            'Пожалуйста, укажите вашу фамилию!',
+                                        message: 'Пожалуйста, укажите фамилию!',
                                     },
                                 ]}
                             >

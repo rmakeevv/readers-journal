@@ -1,6 +1,6 @@
-import { instance } from '../services';
 import { useState } from 'react';
 import { rolesEnum } from '../constants/user';
+import { UserService } from '../services/user';
 
 type FieldType = {
     email?: string;
@@ -14,7 +14,7 @@ type FieldType = {
 type UseSubmitRegisterFormProps = (
     onSuccess: () => void,
     userRole: rolesEnum,
-    parentId?: number
+    parentId: number | null
 ) => {
     onFinish: (values: FieldType) => Promise<void>;
     isError: boolean;
@@ -33,9 +33,10 @@ export const useSubmitRegisterForm: UseSubmitRegisterFormProps = (
                 ...values,
                 role: userRole,
                 last_name: values.lastName,
-                parent_id: parentId ? parentId : null,
+                parent_id: parentId,
             };
-            await instance.post('/user/register', userData);
+
+            await UserService.register(userData);
             setIsError(false);
             onSuccess();
         } catch (e) {

@@ -23,12 +23,14 @@ const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo<FieldType>) => {
 const Register = () => {
     const navigate = useNavigate();
 
-    const onSuccess = () => {
+    const handleRegisterSuccess = () => {
         navigate('/register/success');
     };
+
     const { onFinish, isError } = useSubmitRegisterForm(
-        onSuccess,
-        rolesEnum.parent
+        handleRegisterSuccess,
+        rolesEnum.parent,
+        null
     );
 
     return (
