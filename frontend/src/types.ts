@@ -11,7 +11,7 @@ export interface IBook {
     instock: number;
 }
 
-export type SetBookList = Dispatch<SetStateAction<IBook[] | undefined>>;
+export type SetBookList = Dispatch<SetStateAction<IBook[]>>;
 
 export type BookList = IBook[] | undefined;
 

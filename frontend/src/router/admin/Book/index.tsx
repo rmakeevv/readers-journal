@@ -41,6 +41,7 @@ const Book = () => {
                 '/users/' + userId + '/children'
             );
             setChildren(children.data);
+
             if (children.data.length > 0) {
                 setSelectedChild(children.data[0].id.toString());
             }

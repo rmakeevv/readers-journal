@@ -7,27 +7,9 @@ export const instance = axios.create({
     baseURL,
 });
 
-export const getAllBooks = async () => {
-    try {
-        const res = await instance.get<IBook[]>('book');
-        return res.data;
-    } catch (e) {
-        console.warn(e);
-    }
-};
-
 export const getOneBook = async (id: string) => {
     try {
         const res = await instance.get<IBook[]>('book/' + id);
-        return res.data;
-    } catch (e) {
-        console.warn(e);
-    }
-};
-
-export const createOneBook = async (values: IBook) => {
-    try {
-        const res = await instance.post<IBook>('book', values);
         return res.data;
     } catch (e) {
         console.warn(e);

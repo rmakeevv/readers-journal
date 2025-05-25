@@ -1,12 +1,12 @@
 import { Form, FormInstance } from 'antd';
 import React, { Dispatch, SetStateAction } from 'react';
 import { editOneBook } from 'services';
-import { BookList, IBook, SetBookList } from 'types';
+import { IBook, SetBookList } from 'types';
 
 type UseSaveRowType = (
     setBookList: SetBookList,
     setEditingKey: Dispatch<SetStateAction<string>>,
-    bookList: BookList
+    bookList: IBook[]
 ) => { save: (key: React.Key) => Promise<void>; form: FormInstance };
 
 const UseSaveRow: UseSaveRowType = (setBookList, setEditingKey, bookList) => {

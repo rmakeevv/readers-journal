@@ -4,16 +4,10 @@ import {
     EditableCell,
     AdminHeader,
 } from 'components';
-import {
-    UseDeleteItem,
-    UseFinishCreate,
-    UseLogOut,
-    UseSaveRow,
-    UseGetAllBooksData,
-} from 'hooks';
+import { UseLogOut, UseSaveRow, UseGetAllBooksData } from 'hooks';
 import { useState } from 'react';
 import { Button, Flex, Form, message, Popconfirm, Space, Table } from 'antd';
-import { BookList, IBook, OnFinishFailedErrorInfo } from 'types';
+import { IBook, OnFinishFailedErrorInfo } from 'types';
 import {
     DeleteOutlined,
     EditOutlined,
@@ -21,13 +15,24 @@ import {
     SaveOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { deleteOneBook } from '../../services';
+import { BookService } from '../../services/book';
 
 const Books = () => {
-    const [bookList, setBookList] = useState<BookList>();
+    const [bookList, setBookList] = useState<IBook[]>([]);
     const [editingKey, setEditingKey] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
 
-    const deleteRecord = UseDeleteItem(bookList, setBookList);
+    const deleteRecord = async (item: IBook) => {
+        try {
+            await deleteOneBook(item.id);
+            setBookList((prev) => prev.filter((book) => book.id !== item.id));
+            messageApi.success('Книга успешно удалена'); // Добавил уведомление об успехе
+        } catch (e) {
+            console.error('Ошибка при удалении книги:', e);
+            messageApi.error('Не удалось удалить книгу'); // Уведомление об ошибке
+        }
+    };
 
     const logOut = UseLogOut();
 
@@ -37,7 +42,25 @@ const Books = () => {
             content,
         });
     };
-    const onFinish = UseFinishCreate(setBookList, showSuccessMessage);
+
+    const onSuccessCreate = (data: IBook) => {
+        setBookList((prevState) => {
+            if (prevState) {
+                showSuccessMessage('Запись успешно добавлена!');
+                return [data, ...prevState];
+            }
+            return [data];
+        });
+    };
+
+    const onFinish = async (values: IBook) => {
+        try {
+            const data = await BookService.createOne(values);
+            data && onSuccessCreate(data);
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     const isEditing = (record: IBook) => record.id.toString() === editingKey;
 
@@ -137,7 +160,11 @@ const Books = () => {
         },
     ];
 
-    const { loading, error } = UseGetAllBooksData(setBookList);
+    const onFetchingBooksSuccess = (data: IBook[]) => {
+        setBookList(data);
+    };
+
+    const { loading, error } = UseGetAllBooksData(onFetchingBooksSuccess);
 
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {

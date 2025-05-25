@@ -1,21 +1,20 @@
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { getAllBooks } from 'services';
-import { SetBookList } from 'types';
+import { IBook } from '../types';
+import { BookService } from '../services/book';
 
-export default function UseGetAllBooksData(setBookList: SetBookList) {
+export default function UseGetAllBooksData(onSuccess: (data: IBook[]) => void) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<AxiosError>();
 
     useEffect(() => {
         setLoading(true);
-        getAllBooks()
+        BookService.getAll()
             .then((data) => {
-                setBookList(data);
-                setLoading(false);
+                data && onSuccess(data);
             })
-
-            .catch((error) => setError(error));
+            .catch((error) => setError(error))
+            .finally(() => setLoading(false));
     }, []);
 
     return { loading, error };
