@@ -12,6 +12,7 @@ import { routesEnum } from '../constants/routes';
 import { useAppDispatch } from '../store/hooks';
 import { DecodedTokenProps } from '../types';
 import { setUserData } from '../store/user/slice';
+import { UserService } from '../services/user';
 
 type FieldType = {
     email?: string;
@@ -33,13 +34,13 @@ export const UseAuthForm: UseAuthFormProps = () => {
 
     const onFinish = async (values: FieldType) => {
         try {
-            const response = await instance.post('/user/login', values);
-            const decodedToken = jwtDecode<DecodedTokenProps>(response.data);
+            const data = await UserService.login(values);
+            const decodedToken = jwtDecode<DecodedTokenProps>(data);
 
-            instance.defaults.headers.common[TOKEN_HEADER_KEY] = response.data;
+            instance.defaults.headers.common[TOKEN_HEADER_KEY] = data;
 
             if (values.remember) {
-                localStorage.setItem(LOCALSTORAGE_ID_TOKEN_KEY, response.data);
+                localStorage.setItem(LOCALSTORAGE_ID_TOKEN_KEY, data);
             }
 
             setIsLogged(true);
