@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { instance } from 'services';
-import { LOCALSTORAGE_ID_TOKEN_KEY } from '../constants/id-token';
+import {
+    LOCALSTORAGE_ID_TOKEN_KEY,
+    TOKEN_HEADER_KEY,
+} from '../constants/id-token';
 import { routesEnum } from '../constants/routes';
 import { useAppDispatch } from '../store/hooks';
 import { setUserData } from '../store/user/slice';
@@ -25,8 +28,7 @@ export const UseValidateTokenFromLocalStorage = (
                 setTokenValidationIsLoading(false);
                 navigate(routesEnum.auth, { replace: true });
             } else {
-                instance.defaults.headers.common['gfg_token_header_key'] =
-                    localToken;
+                instance.defaults.headers.common[TOKEN_HEADER_KEY] = localToken;
                 instance
                     .get('/user/validateToken')
                     .then(() => {
