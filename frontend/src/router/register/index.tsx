@@ -1,4 +1,3 @@
-import React from 'react';
 import { Logo, RegisterForm } from '../../components';
 import { OnFinishFailedErrorInfo } from '../../types';
 import styles from './index.module.css';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Checkbox, Flex, Form, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { ValidateErrorEntity } from 'rc-field-form/es/interface';

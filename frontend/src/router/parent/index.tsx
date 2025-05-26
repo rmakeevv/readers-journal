@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getChildrenWithBooks } from '../../services';
 import { useSelector } from 'react-redux';
 import { selectUserId } from '../../store/user/slice';
