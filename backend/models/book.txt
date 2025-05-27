@@ -1,0 +1,8 @@
+                                 Table "public.assignedbooks"
+   Column    |       Type        | Collation | Nullable |               Default
+-------------+-------------------+-----------+----------+--------------------------------------
+ id          | integer           |           | not null | nextval('assigned_id_seq'::regclass)
+ child_id    | integer           |           | not null |
+ book_id     | integer           |           | not null |
+ assigned_by | integer           |           | not null |
+ status      | character varying |           | not null |

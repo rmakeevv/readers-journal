@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import e from 'express';
 
 export const User = {
     findOneByEmail: async (email) => {
@@ -74,11 +75,11 @@ export const User = {
         values.push(id);
 
         const text = `
-        UPDATE users 
-        SET ${updates.join(', ')}
-        WHERE id = $${paramIndex}
-        RETURNING *
-    `;
+            UPDATE users 
+            SET ${updates.join(', ')}
+            WHERE id = $${paramIndex}
+            RETURNING *
+        `;
 
         const query = {
             name: 'update-user',
@@ -103,12 +104,12 @@ export const User = {
             // 2. Для каждого ребенка получаем назначенные книги
             for (const child of children) {
                 const booksQuery = `
-          SELECT b.id, b.name, b.author, ab.status
-          FROM AssignedBooks ab
-          JOIN Books b ON ab.book_id = b.id
-          WHERE ab.child_id = $1
-          ORDER BY ab.id DESC
-        `;
+                  SELECT b.id, b.name, b.author, ab.status
+                  FROM AssignedBooks ab
+                  JOIN Books b ON ab.book_id = b.id
+                  WHERE ab.child_id = $1
+                  ORDER BY ab.id DESC
+                `;
                 const booksResult = await pool.query(booksQuery, [child.id]);
                 child.assignedBooks = booksResult.rows;
             }
@@ -160,6 +161,73 @@ export const User = {
             throw new Error(
                 `Error fetching children with books: ${error.message}`
             );
+        }
+    },
+    startReadingBook: async (parentId, childId, bookId) => {
+        try {
+            // Проверяем, назначена ли книга ребенку в любом статусе
+            const checkQuery = {
+                text: 'SELECT id FROM AssignedBooks WHERE book_id = $1 AND child_id = $2',
+                values: [bookId, childId],
+            };
+            const checkResult = await pool.query(checkQuery);
+
+            if (checkResult.rows.length > 0) {
+                // Если книга уже назначена, обновляем статус
+                const updateQuery = {
+                    text: `
+                    UPDATE AssignedBooks 
+                    SET status = $1
+                    WHERE book_id = $2 AND child_id = $3
+                    RETURNING *
+                `,
+                    values: ['reading', bookId, childId],
+                };
+
+                const updateResult = await pool.query(updateQuery);
+                return updateResult.rows;
+            }
+
+            const text =
+                'INSERT INTO AssignedBooks(id, child_id,  book_id, assigned_by, status) VALUES($1, $2, $3, $4, $5) RETURNING *';
+            const values = [
+                childId + bookId,
+                childId,
+                bookId,
+                parentId,
+                'reading',
+            ];
+
+            const query = {
+                name: 'reading-book',
+                text,
+                values,
+            };
+
+            const result = await pool.query(query);
+            return result.rows;
+        } catch (error) {
+            throw new Error(`Error fetching: ${error.message}`);
+        }
+    },
+    getAssignedBooksByChildId: async (childId) => {
+        try {
+            const getBookIdQuery = {
+                text: 'SELECT book_id FROM AssignedBooks WHERE child_id = $1',
+                values: [childId],
+            };
+            const getBookIdResult = await pool.query(getBookIdQuery);
+            const bookId = getBookIdResult.rows[0].book_id;
+
+            const getBookDataQuery = {
+                text: 'SELECT * FROM books WHERE id = $1',
+                values: [bookId],
+            };
+            const getResult = await pool.query(getBookDataQuery);
+
+            return getResult.rows;
+        } catch (e) {
+            throw new Error(`Error fetching: ${e.message}`);
         }
     },
 };

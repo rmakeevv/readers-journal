@@ -12,7 +12,7 @@ const getOneUser = async (req, res) => {
 
 const getChildrenWithBooks = async (req, res) => {
     try {
-        const parentId = req.params.parentId; // или req.user.id если используете аутентификацию
+        const parentId = req.params.parentId;
         const children = await User.getChildrenWithAssignedBooks(parentId);
 
         res.json({
@@ -55,9 +55,43 @@ const assignBook = async (req, res) => {
     }
 };
 
+const startReadingBook = async (req, res) => {
+    try {
+        const { child_id, book_id, parent_id } = await req.body;
+        const result = await User.startReadingBook(
+            parent_id,
+            child_id,
+            book_id
+        );
+
+        res.send(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+const getAssignedBooksByChildId = async (req, res) => {
+    try {
+        const child_id = await req.params.childId;
+        const result = await User.getAssignedBooksByChildId(child_id);
+
+        res.send(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
 export const userController = {
     getOneUser,
     getChildrenWithBooks,
     getAllChildrenById,
+    getAssignedBooksByChildId,
     assignBook,
+    startReadingBook,
 };

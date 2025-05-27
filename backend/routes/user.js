@@ -13,5 +13,10 @@ router.get(
 
 // GET /users/:parentId/children
 router.get('/users/:parentId/children', userController.getAllChildrenById);
+router.get(
+    '/users/:childId/assigned-books',
+    userController.getAssignedBooksByChildId
+);
 
 router.post('/users/assign', userController.assignBook);
+router.post('/users/start-reading', userController.startReadingBook);
