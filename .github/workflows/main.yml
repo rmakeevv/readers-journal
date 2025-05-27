@@ -25,8 +25,21 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /home/readers-journal/frontend
+            # Обновляем репозиторий
+            cd /home/readers-journal
             git pull origin develop
+            
+            # Фронтенд часть
+            cd frontend
             npm install
             npm run build
+            
+            # Бэкенд часть
+            cd ../backend
+            npm install
+            
+            # Перезапускаем PM2 процесс
+            pm2 restart readers-journal-backend --update-env
+            
+            # Перезапускаем Nginx    
             sudo nginx -t && sudo systemctl restart nginx
