@@ -39,3 +39,11 @@ export const getChildrenWithBooks = async (userId: number) => {
         console.log(e);
     }
 };
+
+export const getAssignedBooksByChildId = async (userId: number) => {
+    try {
+        return await instance.get(`users/${userId}/assigned-books`);
+    } catch (e) {
+        console.log(e);
+    }
+};

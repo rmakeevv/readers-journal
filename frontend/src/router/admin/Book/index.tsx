@@ -7,7 +7,17 @@ import { IBook, User } from '../../../types';
 import { Button, Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
-import { selectUserId } from '../../../store/user/slice';
+import { selectUserData, selectUserId } from '../../../store/user/slice';
+import { rolesEnum } from '../../../constants/user';
+
+enum BookDescriptionLabels {
+    id = 'id',
+    name = 'Название',
+    year = 'Год',
+    genre = 'жанр',
+    author = 'автор',
+    instock = 'в наличии',
+}
 
 const getDescriptionItems = (book: IBook) => {
     const bookItems = Object.entries(book);
@@ -17,7 +27,7 @@ const getDescriptionItems = (book: IBook) => {
 
         return {
             key,
-            label: key,
+            label: BookDescriptionLabels[key as keyof IBook],
             children: <span>{value || '-'}</span>,
         };
     });
@@ -32,22 +42,23 @@ const Book = () => {
     const [bookData, setBookData] = useState<IBook | undefined>(undefined);
     const [children, setChildren] = useState<User[]>([]);
     const [selectedChild, setSelectedChild] = useState<string>();
-    const userId = useSelector(selectUserId);
+    const { id: userId, role } = useSelector(selectUserData);
     const [assignedId, setAssignedId] = useState('');
 
     useEffect(() => {
-        const fetchChildren = async () => {
-            const children = await instance.get(
-                '/users/' + userId + '/children'
-            );
-            setChildren(children.data);
+        if (role === rolesEnum.parent) {
+            const fetchChildren = async () => {
+                const children = await instance.get(
+                    '/users/' + userId + '/children'
+                );
+                setChildren(children.data);
 
-            if (children.data.length > 0) {
-                setSelectedChild(children.data[0].id.toString());
-            }
-        };
-
-        fetchChildren().then();
+                if (children.data.length > 0) {
+                    setSelectedChild(children.data[0].id.toString());
+                }
+            };
+            fetchChildren().then();
+        }
     }, [userId]);
 
     useEffect(() => {
@@ -86,35 +97,41 @@ const Book = () => {
                 <></>
             ) : (
                 <ContentWrapper>
-                    <div className={styles['assign_book']}>
-                        <span>Назначить ребенку</span>
-                        <span>Выберите имя</span>
-                        <select
-                            value={selectedChild}
-                            onChange={(e) => setSelectedChild(e.target.value)}
-                        >
-                            {children.map((child) => (
-                                <option key={child.id} value={child.id}>
-                                    {child.email} {child.name}
-                                </option>
-                            ))}
-                        </select>
-                        <Button
-                            disabled={assignedId === selectedChild}
-                            onClick={handleAssignBook}
-                        >
-                            Назначить книгу
-                        </Button>
+                    {role === rolesEnum.parent && (
+                        <div className={styles['assign_book']}>
+                            <span>Назначить ребенку</span>
+                            <span>Выберите имя</span>
+                            <select
+                                value={selectedChild}
+                                onChange={(e) =>
+                                    setSelectedChild(e.target.value)
+                                }
+                            >
+                                {children.map((child) => (
+                                    <option key={child.id} value={child.id}>
+                                        {child.email} {child.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <Button
+                                disabled={assignedId === selectedChild}
+                                onClick={handleAssignBook}
+                            >
+                                Назначить книгу
+                            </Button>
+                        </div>
+                    )}
 
-                        {}
-                    </div>
                     <div className={styles.container}>
                         <Descriptions
-                            title={bookData.name}
+                            title={'Страница книги: ' + bookData.name}
                             items={getDescriptionItems(bookData)}
                             layout="vertical"
                             bordered
                         />
+                        <div>
+                            <Button>Начать читать книгу</Button>
+                        </div>
                     </div>
                 </ContentWrapper>
             )}

@@ -1,10 +1,10 @@
 import {
+    AdminHeader,
     ContentWrapper,
     CreateForm,
     EditableCell,
-    AdminHeader,
 } from 'components';
-import { UseLogOut, UseSaveRow, UseGetAllBooksData } from 'hooks';
+import { UseGetAllBooksData, UseLogOut, UseSaveRow } from 'hooks';
 import { useState } from 'react';
 import { Button, Flex, Form, message, Popconfirm, Space, Table } from 'antd';
 import { IBook, OnFinishFailedErrorInfo } from 'types';
@@ -17,11 +17,17 @@ import {
 import { Link } from 'react-router-dom';
 import { deleteOneBook } from '../../services';
 import { BookService } from '../../services/book';
+import { useSelector } from 'react-redux';
+import { selectUserRole } from '../../store/user/slice';
+import { rolesEnum } from '../../constants/user';
 
 const Books = () => {
     const [bookList, setBookList] = useState<IBook[]>([]);
     const [editingKey, setEditingKey] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
+
+    const userRole = useSelector(selectUserRole);
+    const isAdmin = userRole === rolesEnum.admin;
 
     const deleteRecord = async (item: IBook) => {
         try {
@@ -140,7 +146,7 @@ const Books = () => {
                         <Button
                             type={'default'}
                             size={'large'}
-                            disabled={editingKey !== ''}
+                            disabled={!isAdmin || editingKey !== ''}
                             onClick={() => edit(record)}
                             icon={<EditOutlined />}
                         ></Button>
@@ -149,6 +155,7 @@ const Books = () => {
                             onConfirm={() => deleteRecord(record)}
                         >
                             <Button
+                                disabled={!isAdmin}
                                 type={'default'}
                                 size={'large'}
                                 icon={<DeleteOutlined />}
@@ -199,10 +206,12 @@ const Books = () => {
             <ContentWrapper>
                 {contextHolder}
 
-                <CreateForm
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                />
+                {isAdmin && (
+                    <CreateForm
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                    />
+                )}
 
                 <div className={'table-container'}>
                     <Form form={form} component={false}>

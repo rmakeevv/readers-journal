@@ -2,6 +2,9 @@
     padding: 2rem;
     flex-grow: 1;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
     /*max-width: 402px;*/
 }
 
