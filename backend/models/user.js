@@ -1,5 +1,4 @@
 import { pool } from '../db.js';
-import e from 'express';
 
 export const User = {
     findOneByEmail: async (email) => {

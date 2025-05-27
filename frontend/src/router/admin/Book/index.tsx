@@ -7,7 +7,7 @@ import { IBook, User } from '../../../types';
 import { Button, Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
-import { selectUserData, selectUserId } from '../../../store/user/slice';
+import { selectUserData } from '../../../store/user/slice';
 import { rolesEnum } from '../../../constants/user';
 
 enum BookDescriptionLabels {
