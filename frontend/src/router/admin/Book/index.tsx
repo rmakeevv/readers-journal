@@ -129,9 +129,11 @@ const Book = () => {
                             layout="vertical"
                             bordered
                         />
-                        <div>
-                            <Button>Начать читать книгу</Button>
-                        </div>
+                        {role === rolesEnum.student && (
+                            <div>
+                                <Button>Начать читать книгу</Button>
+                            </div>
+                        )}
                     </div>
                 </ContentWrapper>
             )}
