@@ -5,7 +5,6 @@ on:
     branches: [ "develop" ]
 
 env:
-  VPS_PROJECT_PATH: /home/readers-journal
   REPO_BRANCH: develop
 
 jobs:
