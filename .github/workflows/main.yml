@@ -2,10 +2,44 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ "develop" ]  # Триггер на пуш в develop
+    branches: [ "develop" ]
+
+env:
+  VPS_PROJECT_PATH: /home/readers-journal
+  REPO_BRANCH: develop
 
 jobs:
-  deploy:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e  # Выход при ошибке
+            
+            echo "Updating repository..."
+            cd $VPS_PROJECT_PATH
+            git fetch
+            git checkout $REPO_BRANCH
+            git pull origin $REPO_BRANCH
+            
+            echo "Installing backend dependencies..."
+            cd backend
+            npm ci --production
+            
+            echo "Restarting PM2 process..."
+            pm2 restart readers-journal-backend --update-env
+            
+            echo "Backend deployment completed successfully!"
+  deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,21 +59,23 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Обновляем репозиторий
-            cd /home/readers-journal
-            git pull origin develop
+            set -e  # Выход при ошибке
             
-            # Фронтенд часть
+            echo "Updating repository..."
+            cd $VPS_PROJECT_PATH
+            git fetch
+            git checkout $REPO_BRANCH
+            git pull origin $REPO_BRANCH
+
+            echo "Installing frontend dependencies..."
             cd frontend
-            npm install
+            npm ci
+            
+            echo "Building frontend..."
             npm run build
             
-            # Бэкенд часть
-            cd ../backend
-            npm install
+            echo "Testing and restarting Nginx..."
+            sudo nginx -t
+            sudo systemctl restart nginx
             
-            # Перезапускаем PM2 процесс
-            pm2 restart readers-journal-backend --update-env
-            
-            # Перезапускаем Nginx    
-            sudo nginx -t && sudo systemctl restart nginx
+            echo "Frontend deployment completed successfully!"
