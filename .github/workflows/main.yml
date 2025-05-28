@@ -26,7 +26,7 @@ jobs:
             set -e  # Выход при ошибке
             
             echo "Updating repository..."
-            cd $VPS_PROJECT_PATH
+            cd /home/readers-journal
             git fetch
             git checkout $REPO_BRANCH
             git pull origin $REPO_BRANCH
@@ -41,6 +41,7 @@ jobs:
             echo "Backend deployment completed successfully!"
   deploy-frontend:
     runs-on: ubuntu-latest
+    needs: deploy-backend  # Зависит от успешного деплоя бэкенда
 
     steps:
       - name: Checkout code
@@ -62,7 +63,7 @@ jobs:
             set -e  # Выход при ошибке
             
             echo "Updating repository..."
-            cd $VPS_PROJECT_PATH
+            cd /home/readers-journal
             git fetch
             git checkout $REPO_BRANCH
             git pull origin $REPO_BRANCH
