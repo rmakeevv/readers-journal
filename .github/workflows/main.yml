@@ -79,3 +79,8 @@ jobs:
             sudo systemctl restart nginx
             
             echo "Frontend deployment completed successfully!"
+
+      - name: Display deployment info
+        run: |
+          echo "App is available on: http://${{ secrets.VPS_IP }}"
+          echo "::notice::App deployed to http://${{ secrets.VPS_IP }}

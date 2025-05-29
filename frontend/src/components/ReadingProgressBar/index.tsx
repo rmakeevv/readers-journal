@@ -1,6 +1,5 @@
-import React from 'react';
 import './index.css';
-import { AssignedBook } from '../../types'; // Стили для прогресс-бара
+import { AssignedBook } from '../../types';
 
 interface ReadingProgressBarProps {
     books: AssignedBook[];
