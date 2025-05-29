@@ -13,14 +13,13 @@ export interface IBook {
 
 export type SetBookList = Dispatch<SetStateAction<IBook[]>>;
 
-export type BookList = IBook[] | undefined;
-
 export type OnFinishFailedErrorInfo<T> = ValidateErrorEntity<T>;
 
 export interface DecodedTokenProps {
     email: string;
     userId: number;
     role: rolesEnum;
+    parent_id: number | null;
     iat: number;
     exp: number;
 }
@@ -30,4 +29,42 @@ export interface User {
     name: string;
     lastName: string;
     email: string;
+}
+
+export interface AssignedBook {
+    /** Уникальный идентификатор книги */
+    id: number;
+
+    /** Название книги */
+    name: string;
+
+    /** Год издания */
+    year: number;
+
+    /** Жанр */
+    genre: string;
+
+    /** Автор */
+    author: string;
+
+    /** Количество в наличии (null - нет данных) */
+    instock: number;
+
+    /** Статус книги для ребенка */
+    status: BookStatus;
+}
+
+/** Возможные статусы книги */
+type BookStatus = 'assigned' | 'reading' | 'completed';
+
+// Соответствие английских и русских статусов
+const StatusTranslations: Record<BookStatus, string> = {
+    assigned: 'Назначена родителем',
+    reading: 'Уже читаю',
+    completed: 'Прочитана',
+};
+
+// Функция для получения русского статуса
+export function getRussianBookStatus(status: BookStatus): string {
+    return StatusTranslations[status];
 }

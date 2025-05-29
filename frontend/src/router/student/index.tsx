@@ -2,14 +2,15 @@ import { AdminHeader } from '../../components';
 import { UseLogOut } from '../../hooks';
 import styles from './index.module.css';
 import { Link } from 'react-router-dom';
-import { IBook } from '../../types';
+import { AssignedBook, getRussianBookStatus } from '../../types';
 import { useEffect, useState } from 'react';
 import { getAssignedBooksByChildId } from '../../services';
 import { useSelector } from 'react-redux';
 import { selectUserId } from '../../store/user/slice';
+import ReadingProgressBar from '../../components/ReadingProgressBar';
 
 const StudentRoute = () => {
-    const [assignedBooks, setAssignedBooks] = useState<IBook[]>([]);
+    const [assignedBooks, setAssignedBooks] = useState<AssignedBook[]>([]);
     const userId = useSelector(selectUserId);
 
     useEffect(() => {
@@ -33,8 +34,11 @@ const StudentRoute = () => {
                 </h1>
             </div>
             <div>
+                <ReadingProgressBar books={assignedBooks} />
+            </div>
+            <div>
                 <div className="table-container">
-                    <h2>Я читаю книги</h2>
+                    <h2>Мои книги</h2>
                     <table className={styles['assigned-books-table']}>
                         <thead>
                             <tr>
@@ -43,6 +47,7 @@ const StudentRoute = () => {
                                 <th align={'left'}>Жанр</th>
                                 <th>Автор</th>
                                 <th align={'left'}>Ссылка</th>
+                                <th align={'left'}>Статус</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,6 +66,9 @@ const StudentRoute = () => {
                                         <Link to={'/books/' + book.id}>
                                             На страницу книги
                                         </Link>
+                                    </td>
+                                    <td align={'left'}>
+                                        {getRussianBookStatus(book.status)}
                                     </td>
                                 </tr>
                             ))}

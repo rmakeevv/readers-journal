@@ -7,12 +7,14 @@ export interface UserState {
     id: number | null;
     role: rolesEnum | null;
     email: string | null;
+    parent_id: number | null;
 }
 
 const initialState: UserState = {
     id: null,
     role: null,
     email: null,
+    parent_id: null,
 };
 
 export const userSlice = createSlice({
@@ -25,6 +27,7 @@ export const userSlice = createSlice({
                 id: action.payload.userId,
                 role: action.payload.role,
                 email: action.payload.email,
+                parent_id: action.payload.parent_id,
             };
         },
     },

@@ -19,17 +19,41 @@ export const authController = {
         let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
         let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-        try {
-            const token = req.header(tokenHeaderKey);
+        // Проверка наличия токена
+        const token = req.header(tokenHeaderKey);
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access denied. No token provided.',
+            });
+        }
 
+        try {
+            // Верификация токена
             const verified = jwt.verify(token, jwtSecretKey);
-            if (verified) {
-                return res.send('Successfully Verified');
-            } else {
-                return res.status(401).send(error);
-            }
+
+            // Можно добавить дополнительную проверку verified, если нужно
+            return res.json({
+                success: true,
+                message: 'Token successfully verified',
+                user: verified, // опционально - возвращаем декодированные данные
+            });
         } catch (error) {
-            return res.status(401).send(error);
+            // Логирование ошибки для сервера
+            console.error('Token verification error:', error);
+
+            // Разные сообщения для разных типов ошибок
+            let errorMessage = 'Invalid token';
+            if (error instanceof jwt.TokenExpiredError) {
+                errorMessage = 'Token expired';
+            } else if (error instanceof jwt.JsonWebTokenError) {
+                errorMessage = 'Invalid token';
+            }
+
+            return res.status(401).json({
+                success: false,
+                message: errorMessage,
+            });
         }
     },
     login: async (req, res) => {
@@ -55,6 +79,7 @@ export const authController = {
                 email: user.email,
                 userId: user.id,
                 role: user.role,
+                parent_id: user.parent_id,
             };
 
             const token = jwt.sign(data, jwtSecretKey, {

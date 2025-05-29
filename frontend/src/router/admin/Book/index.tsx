@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ContentWrapper, AdminHeader } from '../../../components';
 import { UseLogOut } from '../../../hooks';
-import { getOneBook, instance } from '../../../services';
+import {
+    getAssignedBooksByChildId,
+    getOneBook,
+    instance,
+} from '../../../services';
 import { useParams } from 'react-router-dom';
-import { IBook, User } from '../../../types';
+import { AssignedBook, IBook, User } from '../../../types';
 import { Button, Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
@@ -42,8 +46,28 @@ const Book = () => {
     const [bookData, setBookData] = useState<IBook | undefined>(undefined);
     const [children, setChildren] = useState<User[]>([]);
     const [selectedChild, setSelectedChild] = useState<string>();
-    const { id: userId, role } = useSelector(selectUserData);
+    const { id: userId, role, parent_id } = useSelector(selectUserData);
     const [assignedId, setAssignedId] = useState('');
+    const [isBookAssigned, setIsBookAssigned] = useState(false);
+
+    useEffect(() => {
+        if (role !== rolesEnum.student) {
+            return;
+        }
+
+        const fetchData = async () => {
+            if (userId) {
+                const res = await getAssignedBooksByChildId(userId);
+                if (res && res.data) {
+                    const isAssigned = res.data.indexOf(
+                        (book: AssignedBook) => book.id === Number(id)
+                    );
+                    setIsBookAssigned(isAssigned);
+                }
+            }
+        };
+        fetchData();
+    }, [userId, role]);
 
     useEffect(() => {
         if (role === rolesEnum.parent) {
@@ -90,6 +114,18 @@ const Book = () => {
         }
     };
 
+    const handleStartReadingBookButtonClick = async () => {
+        const startReadingBook = async () => {
+            await instance.post('/users/start-reading', {
+                child_id: userId,
+                book_id: id,
+                parent_id: parent_id,
+            });
+        };
+
+        await startReadingBook();
+    };
+
     return (
         <div>
             <AdminHeader logOut={logOut} />
@@ -131,7 +167,12 @@ const Book = () => {
                         />
                         {role === rolesEnum.student && (
                             <div>
-                                <Button>Начать читать книгу</Button>
+                                <Button
+                                    disabled={isBookAssigned}
+                                    onClick={handleStartReadingBookButtonClick}
+                                >
+                                    Начать читать книгу
+                                </Button>
                             </div>
                         )}
                     </div>

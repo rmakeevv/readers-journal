@@ -27,22 +27,23 @@ export const UseValidateTokenFromLocalStorage = (
             if (!localToken) {
                 setTokenValidationIsLoading(false);
                 navigate(routesEnum.auth, { replace: true });
-            } else {
-                instance.defaults.headers.common[TOKEN_HEADER_KEY] = localToken;
-                instance
-                    .get('/user/validateToken')
-                    .then(() => {
-                        setIsLogged(true);
-                        const decodedToken =
-                            jwtDecode<DecodedTokenProps>(localToken);
-                        dispatch(setUserData(decodedToken));
-                    })
-                    .catch(() => {
-                        localStorage.removeItem(LOCALSTORAGE_ID_TOKEN_KEY);
-                        navigate(routesEnum.auth);
-                    })
-                    .finally(() => setTokenValidationIsLoading(false));
+                return;
             }
+
+            instance.defaults.headers.common[TOKEN_HEADER_KEY] = localToken;
+            instance
+                .get('/user/validateToken')
+                .then(() => {
+                    setIsLogged(true);
+                    const decodedToken =
+                        jwtDecode<DecodedTokenProps>(localToken);
+                    dispatch(setUserData(decodedToken));
+                })
+                .catch(() => {
+                    localStorage.removeItem(LOCALSTORAGE_ID_TOKEN_KEY);
+                    navigate(routesEnum.auth);
+                })
+                .finally(() => setTokenValidationIsLoading(false));
         }
     }, [isLogged]);
     return tokenValidationIsLoading;
