@@ -211,22 +211,19 @@ export const User = {
     },
     getAssignedBooksByChildId: async (childId) => {
         try {
-            const getBookIdQuery = {
-                text: 'SELECT book_id FROM AssignedBooks WHERE child_id = $1',
-                values: [childId],
-            };
-            const getBookIdResult = await pool.query(getBookIdQuery);
-            const bookId = getBookIdResult.rows[0].book_id;
+            const result = await pool.query(
+                `
+            SELECT b.*, ab.status
+            FROM books b
+            JOIN AssignedBooks ab ON b.id = ab.book_id
+            WHERE ab.child_id = $1
+        `,
+                [childId]
+            );
 
-            const getBookDataQuery = {
-                text: 'SELECT * FROM books WHERE id = $1',
-                values: [bookId],
-            };
-            const getResult = await pool.query(getBookDataQuery);
-
-            return getResult.rows;
+            return result.rows;
         } catch (e) {
-            throw new Error(`Error fetching: ${e.message}`);
+            throw new Error(`Error fetching assigned books: ${e.message}`);
         }
     },
 };
