@@ -59,10 +59,11 @@ const Book = () => {
             if (userId) {
                 const res = await getAssignedBooksByChildId(userId);
                 if (res && res.data) {
-                    const isAssigned = res.data.indexOf(
+                    const assignedBooks: AssignedBook[] = res.data;
+                    const isAssigned = assignedBooks.find(
                         (book: AssignedBook) => book.id === Number(id)
                     );
-                    setIsBookAssigned(isAssigned);
+                    setIsBookAssigned(!!isAssigned);
                 }
             }
         };
