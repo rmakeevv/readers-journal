@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd frontend
-          npm install
+          npm install --no-audit --no-fund --loglevel=error
           npm run build
 
       - name: Deploy to VPS via SSH
@@ -69,7 +69,7 @@ jobs:
 
             echo "Installing frontend dependencies..."
             cd frontend
-            npm ci
+            npm ci --no-audit --no-fund --loglevel=error
             
             echo "Building frontend..."
             npm run build
