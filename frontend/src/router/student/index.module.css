@@ -1,6 +1,18 @@
 .student-page__title {
     font-size: 24px;
     margin-left: 20px;
+
+    @media screen and (max-width: 768px) {
+        align-items: start;
+        margin: 8px 20px;
+    }
 }
 
-.assigned-books-table {}
+.assigned-books-table {
+}
+
+.misc-col {
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
+}

@@ -43,9 +43,14 @@ const StudentRoute = () => {
                         <thead>
                             <tr>
                                 <th align={'left'}>Название книги</th>
-                                <th>Год</th>
-                                <th align={'left'}>Жанр</th>
-                                <th>Автор</th>
+                                <th className={styles['misc-col']}>Год</th>
+                                <th
+                                    align={'left'}
+                                    className={styles['misc-col']}
+                                >
+                                    Жанр
+                                </th>
+                                <th className={styles['misc-col']}>Автор</th>
                                 <th align={'left'}>Ссылка</th>
                                 <th align={'left'}>Статус</th>
                             </tr>
@@ -59,12 +64,21 @@ const StudentRoute = () => {
                                     }}
                                 >
                                     <td>{book.name}</td>
-                                    <td>{book.year}</td>
-                                    <td>{book.genre}</td>
-                                    <td align={'left'}>{book.author}</td>
+                                    <td className={styles['misc-col']}>
+                                        {book.year}
+                                    </td>
+                                    <td className={styles['misc-col']}>
+                                        {book.genre}
+                                    </td>
+                                    <td
+                                        align={'left'}
+                                        className={styles['misc-col']}
+                                    >
+                                        {book.author}
+                                    </td>
                                     <td>
                                         <Link to={'/books/' + book.id}>
-                                            На страницу книги
+                                            Подробнее
                                         </Link>
                                     </td>
                                     <td align={'left'}>

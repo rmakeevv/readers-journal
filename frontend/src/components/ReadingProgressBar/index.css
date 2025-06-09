@@ -1,7 +1,10 @@
 .progress-container {
-    width: 100%;
     max-width: 600px;
     padding: 20px;
+
+    @media screen and (max-width: 768px) {
+        padding: 10px 20px;
+    }
 }
 
 .progress-bar {
