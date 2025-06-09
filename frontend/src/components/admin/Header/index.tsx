@@ -30,8 +30,8 @@ const AdminHeader = ({ logOut }: IHeader) => {
             <Link to={routesEnum.admin}>
                 <Logo size={'small'} />
             </Link>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <b className={styles['link_to_profile']}>{email}</b>
+            <div className={styles.navbar}>
+                <span className={styles['user__email']}>{email}</span>
                 <Link
                     className={styles['link_to_profile']}
                     to={getLinkToProfile(role)}

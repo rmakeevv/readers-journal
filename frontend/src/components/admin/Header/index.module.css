@@ -15,4 +15,21 @@
 .link_to_profile {
     text-decoration: none;
     color: #fafafa;
+    font-weight: 700;
+}
+
+.user__email {
+    text-decoration: none;
+    color: #fafafa;
+    font-weight: 700;
+
+    @media screen and (max-width: 565px) {
+        display: none;
+    }
+}
+
+.navbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }

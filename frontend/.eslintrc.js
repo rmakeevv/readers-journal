@@ -29,6 +29,8 @@ module.exports = {
         tsconfigRootDir: __dirname,
     },
     plugins: ['@typescript-eslint', 'react'],
-    rules: {},
+    rules: {
+        '@typescript-eslint/ban-ts-comment': 'off',
+    },
     root: true,
 };
