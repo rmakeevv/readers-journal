@@ -41,7 +41,7 @@ export class ModelHelper {
                 values
             );
 
-            return data.rows[0] || null;
+            return data.rows || null;
         } catch (error) {
             console.error('Error in findOne:', error);
             throw error;
