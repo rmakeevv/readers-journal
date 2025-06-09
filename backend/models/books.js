@@ -1,16 +1,14 @@
 import { pool } from '../db.js';
+import { ModelHelper } from './index.js';
+
+const BookModel = new ModelHelper('books');
 
 export const Books = {
     getAll: async () => {
-        const data = await pool.query('SELECT * FROM books ORDER BY id DESC;');
-        return data.rows;
+        return await BookModel.findAll();
     },
     findById: async (id) => {
-        const data = await pool.query('SELECT * FROM books WHERE id = $1;', [
-            id,
-        ]);
-
-        return data.rows;
+        return await BookModel.findOne({ id });
     },
     create: async ({ name, year, genre, author }) => {
         const text = 'INSERT INTO books VALUES ($1, $2, $3, $4) RETURNING *';
