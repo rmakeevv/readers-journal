@@ -7,7 +7,13 @@ import {
     instance,
 } from '../../../services';
 import { useParams } from 'react-router-dom';
-import { AssignedBook, IBook, User } from '../../../types';
+import {
+    AssignedBook,
+    BookStatus,
+    getRussianBookStatus,
+    IBook,
+    User,
+} from '../../../types';
 import { Button, Descriptions, DescriptionsProps } from 'antd';
 import styles from './index.module.css';
 import { useSelector } from 'react-redux';
@@ -49,6 +55,7 @@ const Book = () => {
     const { id: userId, role, parent_id } = useSelector(selectUserData);
     const [assignedId, setAssignedId] = useState('');
     const [isBookAssigned, setIsBookAssigned] = useState(false);
+    const [bookStatus, setBookStatus] = useState<BookStatus | null>();
 
     useEffect(() => {
         if (role !== rolesEnum.student) {
@@ -60,14 +67,15 @@ const Book = () => {
                 const res = await getAssignedBooksByChildId(userId);
                 if (res && res.data) {
                     const assignedBooks: AssignedBook[] = res.data;
-                    const isAssigned = assignedBooks.find(
+                    const assignedBook = assignedBooks.find(
                         (book: AssignedBook) => book.id === Number(id)
                     );
-                    setIsBookAssigned(!!isAssigned);
+                    setIsBookAssigned(!!assignedBook);
+                    setBookStatus(assignedBook?.status);
                 }
             }
         };
-        fetchData();
+        fetchData().catch((e) => console.log(e));
     }, [userId, role]);
 
     useEffect(() => {
@@ -122,6 +130,8 @@ const Book = () => {
                 book_id: id,
                 parent_id: parent_id,
             });
+
+            setIsBookAssigned(true);
         };
 
         await startReadingBook();
@@ -167,13 +177,19 @@ const Book = () => {
                             bordered
                         />
                         {role === rolesEnum.student && (
-                            <div>
+                            <div className={styles['book__status__container']}>
                                 <Button
                                     disabled={isBookAssigned}
                                     onClick={handleStartReadingBookButtonClick}
                                 >
                                     Начать читать книгу
                                 </Button>
+                                <div>
+                                    Статус:
+                                    {(bookStatus &&
+                                        getRussianBookStatus(bookStatus)) ||
+                                        'Не назначена'}
+                                </div>
                             </div>
                         )}
                     </div>

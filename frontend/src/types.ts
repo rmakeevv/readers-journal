@@ -55,7 +55,7 @@ export interface AssignedBook {
 }
 
 /** Возможные статусы книги */
-type BookStatus = 'assigned' | 'reading' | 'completed';
+export type BookStatus = 'assigned' | 'reading' | 'completed';
 
 // Соответствие английских и русских статусов
 const StatusTranslations: Record<BookStatus, string> = {
