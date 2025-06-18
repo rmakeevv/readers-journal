@@ -2,7 +2,8 @@ import styles from './index.module.css';
 import { UseAuthForm } from 'hooks';
 import { AuthForm, Logo } from 'components';
 import { OnFinishFailedErrorInfo } from '../../types';
-import { Divider } from 'antd';
+import { ConfigProvider, Divider, theme } from 'antd';
+import { useState } from 'react';
 
 type FieldType = {
     email?: string;
@@ -14,26 +15,42 @@ const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo<FieldType>) => {
     console.log('Failed:', errorInfo);
 };
 
+const LOGIN_DATA_INCORRECT_MESSAGE = 'Пароль и(или) логин неверный!';
+const FORGOT_PASSWORD_MESSAGE =
+    'Забыли пароль? Напишите администратору на почту';
+
 function Auth() {
     const { onFinish, isError } = UseAuthForm();
+    const [isDark, setIsDark] = useState(false);
 
     return (
-        <div className={styles.page}>
-            <div className={styles['auth-container']}>
-                <Logo size={'middle'} />
-                <AuthForm onFinish={onFinish} onFinishFailed={onFinishFailed} />
-                {isError && (
-                    <span className={styles.error}>
-                        Пароль и(или) логин неверный!
+        <ConfigProvider
+            theme={{
+                algorithm: isDark
+                    ? theme.darkAlgorithm
+                    : theme.defaultAlgorithm,
+            }}
+        >
+            <div className={`${styles.page} ${isDark ? styles.dark : ''}`}>
+                <div className={styles['auth-container']}>
+                    <Logo size={'middle'} />
+                    <AuthForm
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                    />
+                    {isError && (
+                        <span className={styles.error}>
+                            {LOGIN_DATA_INCORRECT_MESSAGE}
+                        </span>
+                    )}
+                    <Divider />
+                    <span>
+                        {FORGOT_PASSWORD_MESSAGE} <br />
+                        <a href={'mailto:example@mail.com'}>example@mail.com</a>
                     </span>
-                )}
-                <Divider />
-                <span>
-                    Забыли пароль? Напишите администратору на почту <br />
-                    <a href={'mailto:example@mail.com'}>example@mail.com</a>
-                </span>
+                </div>
             </div>
-        </div>
+        </ConfigProvider>
     );
 }
 

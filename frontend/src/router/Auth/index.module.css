@@ -11,6 +11,10 @@
     }
 }
 
+.dark {
+    background: #1D2023;
+}
+
 .error {
     color: #ff7875;
     font-size: 14px;
