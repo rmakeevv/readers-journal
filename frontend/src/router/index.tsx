@@ -1,14 +1,14 @@
-import Books from './admin/Books';
-
 import { createBrowserRouter } from 'react-router-dom';
 import Auth from './Auth';
 import AuthProvider from './AuthProvider';
-import Book from './admin/Book';
+import Book from './book';
 import { routesEnum } from '../constants/routes';
 import Register from './register';
 import RegisterSuccess from './register/success';
 import ParentRoute from './parent';
 import StudentRoute from './student';
+import AdminBooks from './admin/Books';
+import BooksRoute from './books';
 
 const Router = createBrowserRouter([
     {
@@ -20,11 +20,7 @@ const Router = createBrowserRouter([
                 children: [
                     {
                         index: true,
-                        element: <Books />,
-                    },
-                    {
-                        path: 'books/:id',
-                        element: <Book />,
+                        element: <AdminBooks />,
                     },
                 ],
             },
@@ -40,6 +36,10 @@ const Router = createBrowserRouter([
                         element: <ParentRoute />,
                     },
                 ],
+            },
+            {
+                path: 'books/',
+                element: <BooksRoute />,
             },
             {
                 path: 'books/:id',
