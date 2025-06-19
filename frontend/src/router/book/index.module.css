@@ -1,0 +1,46 @@
+.container {
+    padding: 1rem 2rem 1rem;
+    flex-grow: 1;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.content__responsive {
+    display: flex;
+    flex-direction: row-reverse;
+
+    @media screen and (max-width: 768px) {
+        flex-direction: column-reverse;
+    }
+}
+
+.assign_book__container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 12px;
+}
+
+.assign_book__title {
+    margin: 0;
+}
+
+.book__status__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+}
+
+.child__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.note__container {
+    display: flex;
+    flex-direction: column;
+}

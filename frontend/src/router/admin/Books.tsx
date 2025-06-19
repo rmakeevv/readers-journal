@@ -5,7 +5,7 @@ import {
     EditableCell,
 } from 'components';
 import { UseGetAllBooksData, UseLogOut, UseSaveRow } from 'hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Flex, Form, message, Popconfirm, Space, Table } from 'antd';
 import { IBook, OnFinishFailedErrorInfo } from 'types';
 import {
@@ -14,20 +14,24 @@ import {
     RollbackOutlined,
     SaveOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { deleteOneBook } from '../../services';
 import { BookService } from '../../services/book';
 import { useSelector } from 'react-redux';
 import { selectUserRole } from '../../store/user/slice';
 import { rolesEnum } from '../../constants/user';
+import useProtectRoute from '../../hooks/UseProtectRoute';
 
-const Books = () => {
+const AdminBooks = () => {
     const [bookList, setBookList] = useState<IBook[]>([]);
     const [editingKey, setEditingKey] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
 
     const userRole = useSelector(selectUserRole);
     const isAdmin = userRole === rolesEnum.admin;
+
+    useProtectRoute({ condition: !isAdmin, navigatePath: '/auth' });
 
     const deleteRecord = async (item: IBook) => {
         try {
@@ -89,7 +93,7 @@ const Books = () => {
         {
             title: 'ID',
             dataIndex: 'id',
-            render: (id: string) => <Link to={'books/' + id}>{id}</Link>,
+            // render: (id: string) => <Link to={'books/' + id}>{id}</Link>,
         },
         {
             title: 'Название',
@@ -146,7 +150,7 @@ const Books = () => {
                         <Button
                             type={'default'}
                             size={'large'}
-                            disabled={!isAdmin || editingKey !== ''}
+                            disabled={editingKey !== ''}
                             onClick={() => edit(record)}
                             icon={<EditOutlined />}
                         ></Button>
@@ -155,7 +159,6 @@ const Books = () => {
                             onConfirm={() => deleteRecord(record)}
                         >
                             <Button
-                                disabled={!isAdmin}
                                 type={'default'}
                                 size={'large'}
                                 icon={<DeleteOutlined />}
@@ -206,12 +209,10 @@ const Books = () => {
             <ContentWrapper>
                 {contextHolder}
 
-                {isAdmin && (
-                    <CreateForm
-                        onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
-                    />
-                )}
+                <CreateForm
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                />
 
                 <div className={'table-container'}>
                     <Form form={form} component={false}>
@@ -238,4 +239,4 @@ const Books = () => {
     );
 };
 
-export default Books;
+export default AdminBooks;
