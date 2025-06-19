@@ -1,6 +1,6 @@
 .progress-container {
     max-width: 600px;
-    padding: 20px;
+    padding: 10px 20px;
 
     @media screen and (max-width: 768px) {
         padding: 10px 20px;
