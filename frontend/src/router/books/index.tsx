@@ -34,8 +34,8 @@ const BooksRoute = () => {
                             >
                                 <div className={styles['book__item']}>
                                     <span>{book.name}</span> /
-                                    <span>{book.author}</span>
-                                    <span>{book.year}</span>
+                                    <span>{book.author}</span> /
+                                    <span>{book.year}</span> /
                                     <span>{book.genre}</span>
                                 </div>
                             </Link>
