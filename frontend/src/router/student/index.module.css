@@ -1,6 +1,6 @@
 .student-page__title {
     font-size: 24px;
-    margin-left: 20px;
+    margin: 0 20px;
 
     @media screen and (max-width: 768px) {
         align-items: start;
@@ -8,7 +8,21 @@
     }
 }
 
+.assigned-books__title {
+    margin: 10px 0;
+}
 .assigned-books-table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.assigned-books-table thead {
+    background: #2196F3;
+}
+
+.assigned-books-table th {
+    padding: 12px 10px;
+    color: #fafafa;
 }
 
 .misc-col {

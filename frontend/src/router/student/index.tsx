@@ -6,12 +6,19 @@ import { AssignedBook, getRussianBookStatus } from '../../types';
 import { useEffect, useState } from 'react';
 import { getAssignedBooksByChildId } from '../../services';
 import { useSelector } from 'react-redux';
-import { selectUserId } from '../../store/user/slice';
+import { selectUserData } from '../../store/user/slice';
 import ReadingProgressBar from '../../components/ReadingProgressBar';
+import useProtectRoute from '../../hooks/UseProtectRoute';
+import { rolesEnum } from '../../constants/user';
 
 const StudentRoute = () => {
     const [assignedBooks, setAssignedBooks] = useState<AssignedBook[]>([]);
-    const userId = useSelector(selectUserId);
+    const { id: userId, role, email } = useSelector(selectUserData);
+
+    useProtectRoute({
+        condition: role !== rolesEnum.student,
+        navigatePath: '/books',
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,7 +37,7 @@ const StudentRoute = () => {
             <AdminHeader logOut={logOut} />
             <div style={{ marginTop: '80px' }}>
                 <h1 className={styles['student-page__title']}>
-                    Страница ученика
+                    Страница ученика: {email}
                 </h1>
             </div>
             <div>
@@ -38,7 +45,9 @@ const StudentRoute = () => {
             </div>
             <div>
                 <div className="table-container">
-                    <h2>Мои книги</h2>
+                    <h2 className={styles['assigned-books__title']}>
+                        Мои книги
+                    </h2>
                     <table className={styles['assigned-books-table']}>
                         <thead>
                             <tr>
