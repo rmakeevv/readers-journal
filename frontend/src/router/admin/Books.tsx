@@ -5,7 +5,7 @@ import {
     EditableCell,
 } from 'components';
 import { UseGetAllBooksData, UseLogOut, UseSaveRow } from 'hooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Flex, Form, message, Popconfirm, Space, Table } from 'antd';
 import { IBook, OnFinishFailedErrorInfo } from 'types';
 import {
@@ -14,7 +14,6 @@ import {
     RollbackOutlined,
     SaveOutlined,
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import { deleteOneBook } from '../../services';
 import { BookService } from '../../services/book';
 import { useSelector } from 'react-redux';
@@ -26,7 +25,6 @@ const AdminBooks = () => {
     const [bookList, setBookList] = useState<IBook[]>([]);
     const [editingKey, setEditingKey] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
-    const navigate = useNavigate();
 
     const userRole = useSelector(selectUserRole);
     const isAdmin = userRole === rolesEnum.admin;
