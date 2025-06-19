@@ -21,7 +21,7 @@ const FORGOT_PASSWORD_MESSAGE =
 
 function Auth() {
     const { onFinish, isError } = UseAuthForm();
-    const [isDark, setIsDark] = useState(false);
+    const [isDark] = useState(false);
 
     return (
         <ConfigProvider
