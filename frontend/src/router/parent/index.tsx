@@ -40,6 +40,11 @@ const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo<FieldType>) => {
     console.log('Failed:', errorInfo);
 };
 
+const getRegisterFormToggleButtonTitle = (isFormShown: boolean) =>
+    isFormShown ? 'отмена' : 'добавить';
+
+const CHILD_REGISTER_FORM_TITLE = 'Добавление ребенка';
+
 const ParentRoute = () => {
     const id = useSelector(selectUserId);
     const [childrenData, setChildrenData] = useState<ChildData[] | null>(null);
@@ -52,7 +57,7 @@ const ParentRoute = () => {
         setIsFormShown(false);
     };
 
-    const handleChildrenRegisterFormToggleButtonClick = () => {
+    const handleRegisterChildFormToggleButtonClick = () => {
         setIsFormShown((prevState) => !prevState);
         setIsSuccess(false);
     };
@@ -73,17 +78,21 @@ const ParentRoute = () => {
 
     if (childrenData) {
         return (
-            <div style={{ marginTop: '60px' }}>
+            <div className={styles['page__container']}>
                 <AdminHeader logOut={logOut} />
-                <div className={styles['add_user_form']}>
-                    <Flex justify={'center'} gap={'middle'} align={'center'}>
-                        <h1>Добавление ребенка</h1>
+                <div className={styles['child_register_form__container']}>
+                    <Flex
+                        justify={'space-between'}
+                        gap={'middle'}
+                        align={'center'}
+                    >
+                        <h1 className={styles['child_register_form__title']}>
+                            {CHILD_REGISTER_FORM_TITLE}
+                        </h1>
                         <Button
-                            onClick={
-                                handleChildrenRegisterFormToggleButtonClick
-                            }
+                            onClick={handleRegisterChildFormToggleButtonClick}
                         >
-                            {isFormShown ? 'скрыть' : 'добавить'}
+                            {getRegisterFormToggleButtonTitle(isFormShown)}
                         </Button>
                     </Flex>
                     {isFormShown && (
@@ -208,15 +217,14 @@ const ParentRoute = () => {
                     )}
                 </div>
                 <div className="table-container">
-                    <h2>Мои дети</h2>
+                    <h2 className={styles['children-table__title']}>
+                        Мои дети: {childrenData.length}
+                    </h2>
                     <table className={styles['user__table']}>
                         <thead>
                             <tr>
-                                <th align={'left'}>Имя</th>
-                                <th>Фамилия</th>
-                                <th align={'left'}>Почта</th>
-                                <th>Прочитанные книги (кол-во)</th>
-                                <th align={'left'}>Сейчас читает</th>
+                                <th align={'left'}>Имя, Почта</th>
+                                <th>Назначенные книги</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -227,21 +235,77 @@ const ParentRoute = () => {
                                         background: index % 2 ? '#F2F2F2' : '',
                                     }}
                                 >
-                                    <td>{user.name}</td>
-                                    <td>{user.last_name}</td>
-                                    <td>{user.email}</td>
-                                    <td align={'center'}>
-                                        {user.assignedBooks.length || '-'}
+                                    <td
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                        }}
+                                    >
+                                        <i>{user.name}</i>
+                                        <i>{user.email}</i>
                                     </td>
-                                    <td>
-                                        <Link
-                                            to={
-                                                '/books/' +
-                                                user.assignedBooks[0]?.id
+                                    <td align={'center'}>
+                                        {!user.assignedBooks.length && (
+                                            <Link
+                                                className={
+                                                    styles[
+                                                        'child__assigned__book__title'
+                                                    ]
+                                                }
+                                                to={'/books'}
+                                            >
+                                                Выбрать книгу
+                                            </Link>
+                                        )}
+                                        <div
+                                            className={
+                                                styles['child__assigned__books']
                                             }
                                         >
-                                            {user.assignedBooks[0]?.name}
-                                        </Link>
+                                            {user.assignedBooks.map(
+                                                (book, index) => {
+                                                    if (index > 6) {
+                                                        return null;
+                                                    }
+
+                                                    if (index > 5) {
+                                                        return (
+                                                            <span key={book.id}>
+                                                                и еще{' '}
+                                                                {user
+                                                                    .assignedBooks
+                                                                    .length -
+                                                                    index}
+                                                            </span>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <Link
+                                                            className={
+                                                                styles[
+                                                                    'child__assigned__book__title'
+                                                                ]
+                                                            }
+                                                            key={book.id}
+                                                            to={
+                                                                '/books/' +
+                                                                book.id
+                                                            }
+                                                        >
+                                                            <span
+                                                                style={{
+                                                                    padding:
+                                                                        '2px',
+                                                                }}
+                                                            >
+                                                                {book.name}
+                                                            </span>
+                                                        </Link>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
