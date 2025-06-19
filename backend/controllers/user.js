@@ -73,6 +73,24 @@ const startReadingBook = async (req, res) => {
     }
 };
 
+const completeReadingBook = async (req, res) => {
+    try {
+        const { child_id, book_id, parent_id } = await req.body;
+        const result = await User.completeReadingBook(
+            parent_id,
+            child_id,
+            book_id
+        );
+
+        res.send(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
 const getAssignedBooksByChildId = async (req, res) => {
     try {
         const child_id = await req.params.childId;
@@ -94,4 +112,5 @@ export const userController = {
     getAssignedBooksByChildId,
     assignBook,
     startReadingBook,
+    completeReadingBook,
 };

@@ -20,3 +20,4 @@ router.get(
 
 router.post('/users/assign', userController.assignBook);
 router.post('/users/start-reading', userController.startReadingBook);
+router.post('/users/complete-reading', userController.completeReadingBook);

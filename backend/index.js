@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { router as authRouter } from './routes/auth.js';
 import { router as bookRouter } from './routes/book.js';
 import { router as userRouter } from './routes/user.js';
+import { router as noteRouter } from './routes/notes.js';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 app.use('/', authRouter);
 app.use('/', bookRouter);
 app.use('/', userRouter);
+app.use('/', noteRouter);
 
 try {
     app.listen(PORT, () => {

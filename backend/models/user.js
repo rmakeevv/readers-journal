@@ -1,12 +1,16 @@
 import { pool } from '../db.js';
+import { ModelHelper } from './index.js';
+
+const UserModel = new ModelHelper('users');
 
 export const User = {
     findOneByEmail: async (email) => {
-        const result = await pool.query(
-            'SELECT * FROM users WHERE email = $1;',
-            [email]
-        );
-        return result.rows[0];
+        try {
+            return await UserModel.findOne({ email });
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     },
     findOneById: async (id) => {
         const result = await pool.query('SELECT * FROM users WHERE id = $1;', [
@@ -205,6 +209,34 @@ export const User = {
 
             const result = await pool.query(query);
             return result.rows;
+        } catch (error) {
+            throw new Error(`Error fetching: ${error.message}`);
+        }
+    },
+    completeReadingBook: async (parentId, childId, bookId) => {
+        try {
+            // Проверяем, назначена ли книга ребенку в любом статусе
+            const checkQuery = {
+                text: 'SELECT id FROM AssignedBooks WHERE book_id = $1 AND child_id = $2',
+                values: [bookId, childId],
+            };
+            const checkResult = await pool.query(checkQuery);
+
+            if (checkResult.rows.length > 0) {
+                // Если книга уже назначена, обновляем статус
+                const updateQuery = {
+                    text: `
+                    UPDATE AssignedBooks 
+                    SET status = $1
+                    WHERE book_id = $2 AND child_id = $3
+                    RETURNING *
+                `,
+                    values: ['completed', bookId, childId],
+                };
+
+                const updateResult = await pool.query(updateQuery);
+                return updateResult.rows;
+            }
         } catch (error) {
             throw new Error(`Error fetching: ${error.message}`);
         }
