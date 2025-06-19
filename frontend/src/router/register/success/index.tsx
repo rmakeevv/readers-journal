@@ -5,7 +5,9 @@ const RegisterSuccess = () => {
     return (
         <div className={styles.page}>
             <div className={styles.register}>
-                <h1>Регистрация прошла успешно!</h1>
+                <h1 className={styles['message-success']}>
+                    Регистрация прошла успешно!
+                </h1>
                 <Link to="/auth" className={styles['go-to-auth']}>
                     Перейти к авторизации
                 </Link>

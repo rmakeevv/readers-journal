@@ -4,14 +4,21 @@
     align-items: center;
     background: #fafafa;
     height: 100vh;
+    padding: 20px;
 }
 
 .register {
     display: flex;
     flex-direction: column;
+    gap: 12px;
 }
 
 .go-to-auth {
     text-decoration: none;
     color: #0958d9;
+}
+
+.message-success {
+    margin: 0;
+    font-size: 24px;
 }
