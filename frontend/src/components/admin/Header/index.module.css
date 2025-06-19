@@ -16,6 +16,7 @@
     text-decoration: none;
     color: #fafafa;
     font-weight: 700;
+    font-size: 14px;
 }
 
 .user__email {
@@ -32,4 +33,5 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    padding: 10px;
 }

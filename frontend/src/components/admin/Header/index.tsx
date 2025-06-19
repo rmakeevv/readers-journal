@@ -27,17 +27,21 @@ const AdminHeader = ({ logOut }: IHeader) => {
 
     return (
         <div className={styles.container}>
-            <Link to={routesEnum.admin}>
+            <Link to={getLinkToProfile(role)}>
                 <Logo size={'small'} />
             </Link>
             <div className={styles.navbar}>
-                <span className={styles['user__email']}>{email}</span>
+                <Link className={styles['link_to_profile']} to={'/books'}>
+                    Доступные книги
+                </Link>
                 <Link
                     className={styles['link_to_profile']}
                     to={getLinkToProfile(role)}
                 >
-                    Профиль
+                    Профиль:
                 </Link>
+                <span className={styles['user__email']}>{email}</span>
+
                 <Button onClick={logOut}>{LOGOUT_BUTTON_TITLE}</Button>
             </div>
         </div>
